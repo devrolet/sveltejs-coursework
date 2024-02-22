@@ -6,6 +6,10 @@
 	// Labeled Statements anyword: action
 	$: uppercaseName = name.toUpperCase();
 
+	$: console.log(name);
+
+	$: if(name === 'Malichi Hill') age = 23;
+
 	let incrementAge = () => age += 1;
 
 	let changeName = () => name = "Malichi Hill";
