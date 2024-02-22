@@ -5,6 +5,9 @@
   let title = "";
   let image = "";
   let description = "";
+  let done = false;
+  let addContact = () => done = true;
+
 </script>
 
 <style>
@@ -33,4 +36,9 @@
   </div>
 </div>
 
+<button on:click="{addContact}">Add Contact Card</button>
+<!-- # = block statement #if = if block statement -->
+<!-- if statement in svelte -->
+{#if done}
 <ContactCard userName={name} jobTitle={title} {description} userImage={image} />
+{/if} 
