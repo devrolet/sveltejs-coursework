@@ -30,6 +30,9 @@
     formState = 'done';
   };
 
+  let deleteFirst = () => createdContacts = createdContacts.slice(1);
+  let deleteLast = () => createdContacts = createdContacts.slice(0, -1);
+
 </script>
 
 <style>
@@ -59,6 +62,10 @@
 </div>
 
 <button on:click="{addContact}">Add Contact Card</button>
+<button on:click="{deleteFirst}">Delete First</button>
+<button on:click="{deleteLast}">Delete Last</button>
+
+
 <!-- # = block statement #if = if block statement -->
 <!-- if statement in svelte -->
 {#if formState === 'invalid'}

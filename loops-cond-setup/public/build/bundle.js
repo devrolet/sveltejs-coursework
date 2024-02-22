@@ -687,12 +687,12 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[11] = list[i];
-    	child_ctx[13] = i;
+    	child_ctx[13] = list[i];
+    	child_ctx[15] = i;
     	return child_ctx;
     }
 
-    // (66:0) {:else}
+    // (73:0) {:else}
     function create_else_block_1(ctx) {
     	let p;
 
@@ -700,7 +700,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Please enter some data and hit the button!";
-    			add_location(p, file, 66, 2, 1561);
+    			add_location(p, file, 73, 2, 1815);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -714,14 +714,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(66:0) {:else}",
+    		source: "(73:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (64:0) {#if formState === 'invalid'}
+    // (71:0) {#if formState === 'invalid'}
     function create_if_block(ctx) {
     	let p;
 
@@ -729,7 +729,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Invalid Input";
-    			add_location(p, file, 64, 2, 1530);
+    			add_location(p, file, 71, 2, 1784);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -743,14 +743,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(64:0) {#if formState === 'invalid'}",
+    		source: "(71:0) {#if formState === 'invalid'}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (77:0) {:else}
+    // (84:0) {:else}
     function create_else_block(ctx) {
     	let p;
 
@@ -758,7 +758,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Please start adding some contacts, we found none!";
-    			add_location(p, file, 77, 2, 1858);
+    			add_location(p, file, 84, 2, 2112);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -773,18 +773,18 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(77:0) {:else}",
+    		source: "(84:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (70:0) {#each createdContacts as contact, index}
+    // (77:0) {#each createdContacts as contact, index}
     function create_each_block(ctx) {
     	let h2;
     	let t0;
-    	let t1_value = /*index*/ ctx[13] + 1 + "";
+    	let t1_value = /*index*/ ctx[15] + 1 + "";
     	let t1;
     	let t2;
     	let contactcard;
@@ -792,10 +792,10 @@ var app = (function () {
 
     	contactcard = new ContactCard({
     			props: {
-    				userName: /*contact*/ ctx[11].name,
-    				jobTitle: /*contact*/ ctx[11].jobTitle,
-    				description: /*contact*/ ctx[11].desc,
-    				userImage: /*contact*/ ctx[11].imageUrl
+    				userName: /*contact*/ ctx[13].name,
+    				jobTitle: /*contact*/ ctx[13].jobTitle,
+    				description: /*contact*/ ctx[13].desc,
+    				userImage: /*contact*/ ctx[13].imageUrl
     			},
     			$$inline: true
     		});
@@ -807,7 +807,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			create_component(contactcard.$$.fragment);
-    			add_location(h2, file, 70, 0, 1689);
+    			add_location(h2, file, 77, 0, 1943);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h2, anchor);
@@ -819,10 +819,10 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			const contactcard_changes = {};
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userName = /*contact*/ ctx[11].name;
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.jobTitle = /*contact*/ ctx[11].jobTitle;
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.description = /*contact*/ ctx[11].desc;
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userImage = /*contact*/ ctx[11].imageUrl;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userName = /*contact*/ ctx[13].name;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.jobTitle = /*contact*/ ctx[13].jobTitle;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.description = /*contact*/ ctx[13].desc;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userImage = /*contact*/ ctx[13].imageUrl;
     			contactcard.$set(contactcard_changes);
     		},
     		i: function intro(local) {
@@ -845,7 +845,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(70:0) {#each createdContacts as contact, index}",
+    		source: "(77:0) {#each createdContacts as contact, index}",
     		ctx
     	});
 
@@ -874,9 +874,13 @@ var app = (function () {
     	let t10;
     	let textarea;
     	let t11;
-    	let button;
+    	let button0;
     	let t13;
-    	let t14;
+    	let button1;
+    	let t15;
+    	let button2;
+    	let t17;
+    	let t18;
     	let each_1_anchor;
     	let current;
     	let mounted;
@@ -934,11 +938,17 @@ var app = (function () {
     			t10 = space();
     			textarea = element("textarea");
     			t11 = space();
-    			button = element("button");
-    			button.textContent = "Add Contact Card";
+    			button0 = element("button");
+    			button0.textContent = "Add Contact Card";
     			t13 = space();
+    			button1 = element("button");
+    			button1.textContent = "Delete First";
+    			t15 = space();
+    			button2 = element("button");
+    			button2.textContent = "Delete Last";
+    			t17 = space();
     			if_block.c();
-    			t14 = space();
+    			t18 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
@@ -951,37 +961,39 @@ var app = (function () {
     			}
 
     			attr_dev(label0, "for", "userName");
-    			add_location(label0, file, 43, 4, 822);
+    			add_location(label0, file, 46, 4, 966);
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "id", "userName");
-    			add_location(input0, file, 44, 4, 866);
+    			add_location(input0, file, 47, 4, 1010);
     			attr_dev(div0, "class", "form-control");
-    			add_location(div0, file, 42, 2, 791);
+    			add_location(div0, file, 45, 2, 935);
     			attr_dev(label1, "for", "jobTitle");
-    			add_location(label1, file, 47, 4, 962);
+    			add_location(label1, file, 50, 4, 1106);
     			attr_dev(input1, "type", "text");
     			attr_dev(input1, "id", "jobTitle");
-    			add_location(input1, file, 48, 4, 1006);
+    			add_location(input1, file, 51, 4, 1150);
     			attr_dev(div1, "class", "form-control");
-    			add_location(div1, file, 46, 2, 931);
+    			add_location(div1, file, 49, 2, 1075);
     			attr_dev(label2, "for", "image");
-    			add_location(label2, file, 51, 4, 1103);
+    			add_location(label2, file, 54, 4, 1247);
     			attr_dev(input2, "type", "text");
     			attr_dev(input2, "id", "image");
-    			add_location(input2, file, 52, 4, 1144);
+    			add_location(input2, file, 55, 4, 1288);
     			attr_dev(div2, "class", "form-control");
-    			add_location(div2, file, 50, 2, 1072);
+    			add_location(div2, file, 53, 2, 1216);
     			attr_dev(label3, "for", "desc");
-    			add_location(label3, file, 55, 4, 1238);
+    			add_location(label3, file, 58, 4, 1382);
     			attr_dev(textarea, "rows", "3");
     			attr_dev(textarea, "id", "desc");
-    			add_location(textarea, file, 56, 4, 1280);
+    			add_location(textarea, file, 59, 4, 1424);
     			attr_dev(div3, "class", "form-control");
-    			add_location(div3, file, 54, 2, 1207);
+    			add_location(div3, file, 57, 2, 1351);
     			attr_dev(div4, "id", "form");
     			attr_dev(div4, "class", "svelte-pd4ajg");
-    			add_location(div4, file, 41, 0, 773);
-    			add_location(button, file, 60, 0, 1354);
+    			add_location(div4, file, 44, 0, 917);
+    			add_location(button0, file, 63, 0, 1498);
+    			add_location(button1, file, 64, 0, 1556);
+    			add_location(button2, file, 65, 0, 1611);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1012,10 +1024,14 @@ var app = (function () {
     			append_dev(div3, textarea);
     			set_input_value(textarea, /*description*/ ctx[3]);
     			insert_dev(target, t11, anchor);
-    			insert_dev(target, button, anchor);
+    			insert_dev(target, button0, anchor);
     			insert_dev(target, t13, anchor);
+    			insert_dev(target, button1, anchor);
+    			insert_dev(target, t15, anchor);
+    			insert_dev(target, button2, anchor);
+    			insert_dev(target, t17, anchor);
     			if_block.m(target, anchor);
-    			insert_dev(target, t14, anchor);
+    			insert_dev(target, t18, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				if (each_blocks[i]) {
@@ -1033,11 +1049,13 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[7]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[8]),
-    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[9]),
-    					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[10]),
-    					listen_dev(button, "click", /*addContact*/ ctx[6], false, false, false, false)
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[9]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[10]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[11]),
+    					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[12]),
+    					listen_dev(button0, "click", /*addContact*/ ctx[6], false, false, false, false),
+    					listen_dev(button1, "click", /*deleteFirst*/ ctx[7], false, false, false, false),
+    					listen_dev(button2, "click", /*deleteLast*/ ctx[8], false, false, false, false)
     				];
 
     				mounted = true;
@@ -1066,7 +1084,7 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(t14.parentNode, t14);
+    					if_block.m(t18.parentNode, t18);
     				}
     			}
 
@@ -1130,10 +1148,14 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div4);
     			if (detaching) detach_dev(t11);
-    			if (detaching) detach_dev(button);
+    			if (detaching) detach_dev(button0);
     			if (detaching) detach_dev(t13);
+    			if (detaching) detach_dev(button1);
+    			if (detaching) detach_dev(t15);
+    			if (detaching) detach_dev(button2);
+    			if (detaching) detach_dev(t17);
     			if_block.d(detaching);
-    			if (detaching) detach_dev(t14);
+    			if (detaching) detach_dev(t18);
     			destroy_each(each_blocks, detaching);
     			if (detaching) detach_dev(each_1_anchor);
     			if (each_1_else) each_1_else.d(detaching);
@@ -1183,6 +1205,8 @@ var app = (function () {
     		$$invalidate(4, formState = 'done');
     	};
 
+    	let deleteFirst = () => $$invalidate(5, createdContacts = createdContacts.slice(1));
+    	let deleteLast = () => $$invalidate(5, createdContacts = createdContacts.slice(0, -1));
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -1217,7 +1241,9 @@ var app = (function () {
     		description,
     		formState,
     		createdContacts,
-    		addContact
+    		addContact,
+    		deleteFirst,
+    		deleteLast
     	});
 
     	$$self.$inject_state = $$props => {
@@ -1228,6 +1254,8 @@ var app = (function () {
     		if ('formState' in $$props) $$invalidate(4, formState = $$props.formState);
     		if ('createdContacts' in $$props) $$invalidate(5, createdContacts = $$props.createdContacts);
     		if ('addContact' in $$props) $$invalidate(6, addContact = $$props.addContact);
+    		if ('deleteFirst' in $$props) $$invalidate(7, deleteFirst = $$props.deleteFirst);
+    		if ('deleteLast' in $$props) $$invalidate(8, deleteLast = $$props.deleteLast);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1242,6 +1270,8 @@ var app = (function () {
     		formState,
     		createdContacts,
     		addContact,
+    		deleteFirst,
+    		deleteLast,
     		input0_input_handler,
     		input1_input_handler,
     		input2_input_handler,
