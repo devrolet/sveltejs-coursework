@@ -64,7 +64,8 @@
 
 <div class="contact-card">
     <header>
-        <div class="{userImg ? 'thumb' : 'thumb thumb-placeholder'}">
+        <!-- class: is considered a directive in Svelte -->
+        <div class="thumb" class:thumb-placeholder="{!userImg}">
             <img src="{userImg}" alt="{userName}">
         </div>
         <div class="user-data">
