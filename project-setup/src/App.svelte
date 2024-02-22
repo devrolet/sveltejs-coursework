@@ -4,7 +4,7 @@
 	let name = "";
 	let age = 46;
 	let occupation = "";
-	let dummyText = "";
+	let description = "";
 	let imgURL = "";
 	// Labeled Statements anyword: action
 	$: uppercaseName = name.toUpperCase();
@@ -49,10 +49,18 @@
 	<input type="text" id="job-title" bind:value="{occupation}" />
 
 	<label for="desc">Description</label>
-	<textarea rows="4" id="desc" bind:value="{dummyText}"></textarea>
+	<textarea rows="4" id="desc" bind:value="{description}"></textarea>
 
 	<label for="image-url">Enter Image URL</label>
 	<input type="text" id="image-url" bind:value="{imgURL}" />
 </form>
-
-<ContactCard userName="{name}" jobTitle="{occupation}" description="{dummyText}" userImg="{imgURL}" />
+<!-- 
+	If property and value is the same name you can use just the name in curly braces
+	example {description} below. These are called self-extending properties in SvelteJS
+-->
+<ContactCard 
+	userName="{name}" 
+	jobTitle="{occupation}" 
+	{description} 
+	userImg="{imgURL}" 
+/>
