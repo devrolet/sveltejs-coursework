@@ -22,6 +22,7 @@
     createdContacts = [
      ...createdContacts,
      {
+      id: Math.random(),
       name: name,
       jobTitle: title,
       imageUrl: image,
@@ -74,7 +75,8 @@
   <p>Please enter some data and hit the button!</p>
 {/if}
 <!-- Extracting the index -->
-{#each createdContacts as contact, index}
+<!-- Adding a unique key identifier -->
+{#each createdContacts as contact, index (contact.id)}
 <h2># {index + 1}</h2>
 <ContactCard 
   userName={contact.name} 
