@@ -69,6 +69,10 @@
         </div>
     </header>
     <div class="description">
-        <p>{description}</p>
+        <!-- 
+            Svelte will treat this as HTML code instead of text. 
+            Always protect the codebase by sanitizing the code and do not use <script> tags
+        -->
+        <p>{@html description}</p>
     </div>
 </div>
