@@ -13,6 +13,11 @@
 	let incrementAge = () => age += 1;
 
 	let changeName = () => name = "Malichi Hill";
+
+	let nameInput = (event) => {
+		const enteredValue = event.target.value;
+		name = enteredValue;
+	}
 </script>
 
 <style>
@@ -30,4 +35,5 @@
 <p>{name} is in the {industry} industry</p>
 <!-- The {} are required, "" are not, enter name of function w/o the () to execute -->
 <button on:click="{incrementAge}">Change Age</button> 
-<button on:click="{changeName}">Change Name</button>
+<!-- <button on:click="{changeName}">Change Name</button> -->
+<input type="text" value="{name}" on:input="{nameInput}">
