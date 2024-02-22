@@ -6,7 +6,7 @@
   let image = "";
   let description = "";
   let formState = 'empty';
-  let createdContact;
+  let createdContacts = [];
 
   let addContact = () => {
     if(
@@ -18,12 +18,15 @@
         formState = 'invalid';
         return;
     }
-    createdContact = {
+    // Svelte doesn't recognize array methods like push, pop, etc. use = 
+    createdContacts = [
+     ...createdContacts,
+     {
       name: name,
       jobTitle: title,
       imageUrl: image,
       desc: description
-    }
+    }];
     formState = 'done';
   };
 
@@ -58,14 +61,16 @@
 <button on:click="{addContact}">Add Contact Card</button>
 <!-- # = block statement #if = if block statement -->
 <!-- if statement in svelte -->
-{#if formState === 'done'}
-<ContactCard 
-  userName={createdContact.name} 
-  jobTitle={createdContact.jobTitle} 
-  description={createdContact.desc} 
-  userImage={createdContact.imageUrl} />
-{:else if formState === 'invalid'}
-  <p>Invalid input</p>
+{#if formState === 'invalid'}
+  <p>Invalid Input</p>
 {:else}
   <p>Please enter some data and hit the button!</p>
 {/if}
+
+{#each createdContacts as contact}
+<ContactCard 
+  userName={contact.name} 
+  jobTitle={contact.jobTitle} 
+  description={contact.desc} 
+  userImage={contact.imageUrl} />
+{/each}
