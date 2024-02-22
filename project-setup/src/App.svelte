@@ -36,4 +36,5 @@
 <!-- The {} are required, "" are not, enter name of function w/o the () to execute -->
 <button on:click="{incrementAge}">Change Age</button> 
 <!-- <button on:click="{changeName}">Change Name</button> -->
-<input type="text" value="{name}" on:input="{nameInput}">
+<!-- <input type="text" value="{name}" on:input="{nameInput}"> -->
+<input type="text" bind:value="{name}">
