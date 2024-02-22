@@ -692,7 +692,7 @@ var app = (function () {
     }
 
     // (66:0) {:else}
-    function create_else_block(ctx) {
+    function create_else_block_1(ctx) {
     	let p;
 
     	const block = {
@@ -711,7 +711,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block.name,
+    		id: create_else_block_1.name,
     		type: "else",
     		source: "(66:0) {:else}",
     		ctx
@@ -743,6 +743,36 @@ var app = (function () {
     		id: create_if_block.name,
     		type: "if",
     		source: "(64:0) {#if formState === 'invalid'}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (76:0) {:else}
+    function create_else_block(ctx) {
+    	let p;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "Please start adding some contacts, we found none!";
+    			add_location(p, file, 76, 2, 1799);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(76:0) {:else}",
     		ctx
     	});
 
@@ -837,7 +867,7 @@ var app = (function () {
 
     	function select_block_type(ctx, dirty) {
     		if (/*formState*/ ctx[4] === 'invalid') return create_if_block;
-    		return create_else_block;
+    		return create_else_block_1;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -853,6 +883,12 @@ var app = (function () {
     	const out = i => transition_out(each_blocks[i], 1, 1, () => {
     		each_blocks[i] = null;
     	});
+
+    	let each_1_else = null;
+
+    	if (!each_value.length) {
+    		each_1_else = create_else_block(ctx);
+    	}
 
     	const block = {
     		c: function create() {
@@ -892,6 +928,11 @@ var app = (function () {
     			}
 
     			each_1_anchor = empty();
+
+    			if (each_1_else) {
+    				each_1_else.c();
+    			}
+
     			attr_dev(label0, "for", "userName");
     			add_location(label0, file, 43, 4, 822);
     			attr_dev(input0, "type", "text");
@@ -966,6 +1007,11 @@ var app = (function () {
     			}
 
     			insert_dev(target, each_1_anchor, anchor);
+
+    			if (each_1_else) {
+    				each_1_else.m(target, anchor);
+    			}
+
     			current = true;
 
     			if (!mounted) {
@@ -1033,6 +1079,17 @@ var app = (function () {
     				}
 
     				check_outros();
+
+    				if (!each_value.length && each_1_else) {
+    					each_1_else.p(ctx, dirty);
+    				} else if (!each_value.length) {
+    					each_1_else = create_else_block(ctx);
+    					each_1_else.c();
+    					each_1_else.m(each_1_anchor.parentNode, each_1_anchor);
+    				} else if (each_1_else) {
+    					each_1_else.d(1);
+    					each_1_else = null;
+    				}
     			}
     		},
     		i: function intro(local) {
@@ -1062,6 +1119,7 @@ var app = (function () {
     			if (detaching) detach_dev(t14);
     			destroy_each(each_blocks, detaching);
     			if (detaching) detach_dev(each_1_anchor);
+    			if (each_1_else) each_1_else.d(detaching);
     			mounted = false;
     			run_all(dispose);
     		}
