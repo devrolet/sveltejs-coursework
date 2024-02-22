@@ -5,8 +5,19 @@
   let title = "";
   let image = "";
   let description = "";
-  let done = false;
-  let addContact = () => done = true;
+  let formState = 'empty';
+  let addContact = () => {
+    if(
+      name.trim().length == 0 || 
+      title.trim().length == 0 || 
+      image.trim().length == 0 || 
+      description.trim().length == 0
+      ) {
+        formState = 'invalid';
+        return;
+    }
+    formState = 'done';
+  };
 
 </script>
 
@@ -39,6 +50,14 @@
 <button on:click="{addContact}">Add Contact Card</button>
 <!-- # = block statement #if = if block statement -->
 <!-- if statement in svelte -->
-{#if done}
-<ContactCard userName={name} jobTitle={title} {description} userImage={image} />
-{/if} 
+{#if formState === 'done'}
+<ContactCard 
+  userName={name} 
+  jobTitle={title} 
+  {description} 
+  userImage={image} />
+{:else if formState === 'invalid'}
+  <p>Invalid input</p>
+{:else}
+  <p>Please enter some data and hit the button!</p>
+{/if}
