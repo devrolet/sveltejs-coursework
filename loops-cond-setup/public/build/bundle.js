@@ -688,6 +688,7 @@ var app = (function () {
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[11] = list[i];
+    	child_ctx[13] = i;
     	return child_ctx;
     }
 
@@ -749,7 +750,7 @@ var app = (function () {
     	return block;
     }
 
-    // (76:0) {:else}
+    // (77:0) {:else}
     function create_else_block(ctx) {
     	let p;
 
@@ -757,7 +758,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Please start adding some contacts, we found none!";
-    			add_location(p, file, 76, 2, 1799);
+    			add_location(p, file, 77, 2, 1858);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -772,15 +773,20 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(76:0) {:else}",
+    		source: "(77:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (70:0) {#each createdContacts as contact}
+    // (70:0) {#each createdContacts as contact, index}
     function create_each_block(ctx) {
+    	let h2;
+    	let t0;
+    	let t1_value = /*index*/ ctx[13] + 1 + "";
+    	let t1;
+    	let t2;
     	let contactcard;
     	let current;
 
@@ -796,9 +802,18 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
+    			h2 = element("h2");
+    			t0 = text("# ");
+    			t1 = text(t1_value);
+    			t2 = space();
     			create_component(contactcard.$$.fragment);
+    			add_location(h2, file, 70, 0, 1689);
     		},
     		m: function mount(target, anchor) {
+    			insert_dev(target, h2, anchor);
+    			append_dev(h2, t0);
+    			append_dev(h2, t1);
+    			insert_dev(target, t2, anchor);
     			mount_component(contactcard, target, anchor);
     			current = true;
     		},
@@ -820,6 +835,8 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h2);
+    			if (detaching) detach_dev(t2);
     			destroy_component(contactcard, detaching);
     		}
     	};
@@ -828,7 +845,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(70:0) {#each createdContacts as contact}",
+    		source: "(70:0) {#each createdContacts as contact, index}",
     		ctx
     	});
 

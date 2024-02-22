@@ -66,8 +66,9 @@
 {:else}
   <p>Please enter some data and hit the button!</p>
 {/if}
-
-{#each createdContacts as contact}
+<!-- Extracting the index -->
+{#each createdContacts as contact, index}
+<h2># {index + 1}</h2>
 <ContactCard 
   userName={contact.name} 
   jobTitle={contact.jobTitle} 
