@@ -6,6 +6,8 @@
   let image = "";
   let description = "";
   let formState = 'empty';
+  let createdContact;
+
   let addContact = () => {
     if(
       name.trim().length == 0 || 
@@ -15,6 +17,12 @@
       ) {
         formState = 'invalid';
         return;
+    }
+    createdContact = {
+      name: name,
+      jobTitle: title,
+      imageUrl: image,
+      desc: description
     }
     formState = 'done';
   };
@@ -52,10 +60,10 @@
 <!-- if statement in svelte -->
 {#if formState === 'done'}
 <ContactCard 
-  userName={name} 
-  jobTitle={title} 
-  {description} 
-  userImage={image} />
+  userName={createdContact.name} 
+  jobTitle={createdContact.jobTitle} 
+  description={createdContact.desc} 
+  userImage={createdContact.imageUrl} />
 {:else if formState === 'invalid'}
   <p>Invalid input</p>
 {:else}
