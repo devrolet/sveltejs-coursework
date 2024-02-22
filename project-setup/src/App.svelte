@@ -1,11 +1,11 @@
 <script>
 	import ContactCard from "./ContactCard.svelte";
 
-	let name = "Chet Hill";
+	let name = "";
 	let age = 46;
-	let occupation = "Application Engineer";
-	let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-
+	let occupation = "";
+	let dummyText = "";
+	let imgURL = "";
 	// Labeled Statements anyword: action
 	$: uppercaseName = name.toUpperCase();
 
@@ -40,6 +40,19 @@
 <button on:click="{incrementAge}">Change Age</button> 
 <!-- <button on:click="{changeName}">Change Name</button> -->
 <!-- <input type="text" value="{name}" on:input="{nameInput}"> -->
-<input type="text" bind:value="{name}">
+<br>
+<form>
+	<label for="username">Username</label>
+	<input type="text" id="username" bind:value="{name}" />
 
-<ContactCard userName="{name}" title="{occupation}" description="{dummyText}" />
+	<label for="job-title">Job Title</label>
+	<input type="text" id="job-title" bind:value="{occupation}" />
+
+	<label for="desc">Description</label>
+	<textarea rows="4" id="desc" bind:value="{dummyText}"></textarea>
+
+	<label for="image-url">Enter Image URL</label>
+	<input type="text" id="image-url" bind:value="{imgURL}" />
+</form>
+
+<ContactCard userName="{name}" jobTitle="{occupation}" description="{dummyText}" userImg="{imgURL}" />
