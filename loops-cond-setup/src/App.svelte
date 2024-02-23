@@ -68,8 +68,8 @@
 </form>
 
 
-
-<button on:click="{deleteFirst}">Delete First</button>
+<!-- Inline Functions in SvelteJS: Best for single line functions although multiline is available, better to call a function instead in that case -->
+<button on:click="{(event) => createdContacts = createdContacts.slice(1)}">Delete First</button>
 <button on:click="{deleteLast}">Delete Last</button>
 
 

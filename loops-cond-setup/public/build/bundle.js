@@ -789,8 +789,8 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
-    	child_ctx[15] = i;
+    	child_ctx[14] = list[i];
+    	child_ctx[16] = i;
     	return child_ctx;
     }
 
@@ -802,7 +802,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Please enter some data and hit the button!";
-    			add_location(p, file, 80, 2, 1987);
+    			add_location(p, file, 80, 2, 2178);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -831,7 +831,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Invalid Input";
-    			add_location(p, file, 78, 2, 1956);
+    			add_location(p, file, 78, 2, 2147);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -860,7 +860,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Please start adding some contacts, we found none!";
-    			add_location(p, file, 92, 2, 2337);
+    			add_location(p, file, 92, 2, 2528);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -886,7 +886,7 @@ var app = (function () {
     function create_each_block(key_1, ctx) {
     	let h2;
     	let t0;
-    	let t1_value = /*index*/ ctx[15] + 1 + "";
+    	let t1_value = /*index*/ ctx[16] + 1 + "";
     	let t1;
     	let t2;
     	let contactcard;
@@ -894,10 +894,10 @@ var app = (function () {
 
     	contactcard = new ContactCard({
     			props: {
-    				userName: /*contact*/ ctx[13].name,
-    				jobTitle: /*contact*/ ctx[13].jobTitle,
-    				description: /*contact*/ ctx[13].desc,
-    				userImage: /*contact*/ ctx[13].imageUrl
+    				userName: /*contact*/ ctx[14].name,
+    				jobTitle: /*contact*/ ctx[14].jobTitle,
+    				description: /*contact*/ ctx[14].desc,
+    				userImage: /*contact*/ ctx[14].imageUrl
     			},
     			$$inline: true
     		});
@@ -911,7 +911,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = space();
     			create_component(contactcard.$$.fragment);
-    			add_location(h2, file, 85, 0, 2168);
+    			add_location(h2, file, 85, 0, 2359);
     			this.first = h2;
     		},
     		m: function mount(target, anchor) {
@@ -924,12 +924,12 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if ((!current || dirty & /*createdContacts*/ 32) && t1_value !== (t1_value = /*index*/ ctx[15] + 1 + "")) set_data_dev(t1, t1_value);
+    			if ((!current || dirty & /*createdContacts*/ 32) && t1_value !== (t1_value = /*index*/ ctx[16] + 1 + "")) set_data_dev(t1, t1_value);
     			const contactcard_changes = {};
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userName = /*contact*/ ctx[13].name;
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.jobTitle = /*contact*/ ctx[13].jobTitle;
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.description = /*contact*/ ctx[13].desc;
-    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userImage = /*contact*/ ctx[13].imageUrl;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userName = /*contact*/ ctx[14].name;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.jobTitle = /*contact*/ ctx[14].jobTitle;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.description = /*contact*/ ctx[14].desc;
+    			if (dirty & /*createdContacts*/ 32) contactcard_changes.userImage = /*contact*/ ctx[14].imageUrl;
     			contactcard.$set(contactcard_changes);
     		},
     		i: function intro(local) {
@@ -1004,7 +1004,7 @@ var app = (function () {
     	let if_block = current_block_type(ctx);
     	let each_value = /*createdContacts*/ ctx[5];
     	validate_each_argument(each_value);
-    	const get_key = ctx => /*contact*/ ctx[13].id;
+    	const get_key = ctx => /*contact*/ ctx[14].id;
     	validate_each_keys(ctx, each_value, get_each_context, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1100,8 +1100,8 @@ var app = (function () {
     			attr_dev(form, "id", "form");
     			attr_dev(form, "class", "svelte-wr3rg0");
     			add_location(form, file, 46, 0, 962);
-    			add_location(button1, file, 71, 0, 1728);
-    			add_location(button2, file, 72, 0, 1783);
+    			add_location(button1, file, 71, 0, 1877);
+    			add_location(button2, file, 72, 0, 1974);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1157,13 +1157,13 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[9]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[10]),
-    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[11]),
-    					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[12]),
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[8]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[9]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[10]),
+    					listen_dev(textarea, "input", /*textarea_input_handler*/ ctx[11]),
     					listen_dev(button0, "click", prevent_default(/*addContact*/ ctx[6]), false, true, false, false),
-    					listen_dev(button1, "click", /*deleteFirst*/ ctx[7], false, false, false, false),
-    					listen_dev(button2, "click", /*deleteLast*/ ctx[8], false, false, false, false)
+    					listen_dev(button1, "click", /*click_handler*/ ctx[12], false, false, false, false),
+    					listen_dev(button2, "click", /*deleteLast*/ ctx[7], false, false, false, false)
     				];
 
     				mounted = true;
@@ -1323,6 +1323,8 @@ var app = (function () {
     		$$invalidate(3, description);
     	}
 
+    	const click_handler = event => $$invalidate(5, createdContacts = createdContacts.slice(1));
+
     	$$self.$capture_state = () => ({
     		ContactCard,
     		name,
@@ -1344,8 +1346,8 @@ var app = (function () {
     		if ('formState' in $$props) $$invalidate(4, formState = $$props.formState);
     		if ('createdContacts' in $$props) $$invalidate(5, createdContacts = $$props.createdContacts);
     		if ('addContact' in $$props) $$invalidate(6, addContact = $$props.addContact);
-    		if ('deleteFirst' in $$props) $$invalidate(7, deleteFirst = $$props.deleteFirst);
-    		if ('deleteLast' in $$props) $$invalidate(8, deleteLast = $$props.deleteLast);
+    		if ('deleteFirst' in $$props) deleteFirst = $$props.deleteFirst;
+    		if ('deleteLast' in $$props) $$invalidate(7, deleteLast = $$props.deleteLast);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1360,12 +1362,12 @@ var app = (function () {
     		formState,
     		createdContacts,
     		addContact,
-    		deleteFirst,
     		deleteLast,
     		input0_input_handler,
     		input1_input_handler,
     		input2_input_handler,
-    		textarea_input_handler
+    		textarea_input_handler,
+    		click_handler
     	];
     }
 
