@@ -52,7 +52,8 @@
 {/if}
 
 <ul>
-	{#each passwords as pw, index}
-		<li on:click={removePassword.bind(this, index)}>{pw}</li>
+	<!-- The element in the () is considered a key identifier which helps performance by only removing dom elements that have to be removed -->
+	{#each passwords as pw, i (pw)}
+		<li on:click={removePassword.bind(this, i)}>{pw}</li>
 	{/each}
 </ul>
