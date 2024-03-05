@@ -188,6 +188,19 @@ var app = (function () {
     }
     const outroing = new Set();
     let outros;
+    function group_outros() {
+        outros = {
+            r: 0,
+            c: [],
+            p: outros // parent group
+        };
+    }
+    function check_outros() {
+        if (!outros.r) {
+            run_all(outros.c);
+        }
+        outros = outros.p;
+    }
     function transition_in(block, local) {
         if (block && block.i) {
             outroing.delete(block);
@@ -371,6 +384,13 @@ var app = (function () {
         else
             dispatch_dev('SvelteDOMSetAttribute', { node, attribute, value });
     }
+    function set_data_dev(text, data) {
+        data = '' + data;
+        if (text.data === data)
+            return;
+        dispatch_dev('SvelteDOMSetData', { node: text, data });
+        text.data = data;
+    }
     function validate_each_argument(arg) {
         if (typeof arg !== 'string' && !(arg && typeof arg === 'object' && 'length' in arg)) {
             let msg = '{#each} only iterates over array-like objects.';
@@ -485,19 +505,29 @@ var app = (function () {
     	let article;
     	let header;
     	let h1;
+    	let t0;
     	let t1;
     	let h2;
+    	let t2;
     	let t3;
+    	let p0;
+    	let t4;
+    	let t5;
     	let div0;
     	let img;
     	let img_src_value;
-    	let t4;
+    	let t6;
     	let div1;
-    	let p;
-    	let t5;
-    	let footer;
-    	let button0;
+    	let p1;
     	let t7;
+    	let t8;
+    	let footer;
+    	let a;
+    	let t9;
+    	let a_href_value;
+    	let t10;
+    	let button0;
+    	let t12;
     	let button1;
 
     	const block = {
@@ -505,45 +535,56 @@ var app = (function () {
     			article = element("article");
     			header = element("header");
     			h1 = element("h1");
-    			h1.textContent = "TITLE";
+    			t0 = text(/*title*/ ctx[0]);
     			t1 = space();
     			h2 = element("h2");
-    			h2.textContent = "SUBTITLE";
+    			t2 = text(/*subtitle*/ ctx[1]);
     			t3 = space();
+    			p0 = element("p");
+    			t4 = text(/*address*/ ctx[4]);
+    			t5 = space();
     			div0 = element("div");
     			img = element("img");
-    			t4 = space();
+    			t6 = space();
     			div1 = element("div");
-    			p = element("p");
-    			t5 = space();
+    			p1 = element("p");
+    			t7 = text(/*description*/ ctx[3]);
+    			t8 = space();
     			footer = element("footer");
+    			a = element("a");
+    			t9 = text("Contact");
+    			t10 = space();
     			button0 = element("button");
     			button0.textContent = "Show Details";
-    			t7 = space();
+    			t12 = space();
     			button1 = element("button");
     			button1.textContent = "Favorite";
     			attr_dev(h1, "class", "svelte-19fue3z");
-    			add_location(h1, file$1, 51, 8, 861);
+    			add_location(h1, file$1, 60, 8, 1027);
     			attr_dev(h2, "class", "svelte-19fue3z");
-    			add_location(h2, file$1, 52, 8, 884);
+    			add_location(h2, file$1, 61, 8, 1052);
+    			attr_dev(p0, "class", "svelte-19fue3z");
+    			add_location(p0, file$1, 62, 8, 1080);
     			attr_dev(header, "class", "svelte-19fue3z");
-    			add_location(header, file$1, 50, 4, 844);
-    			if (!src_url_equal(img.src, img_src_value = "")) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "alt", "");
+    			add_location(header, file$1, 59, 4, 1010);
+    			if (!src_url_equal(img.src, img_src_value = /*imageUrl*/ ctx[2])) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", /*title*/ ctx[0]);
     			attr_dev(img, "class", "svelte-19fue3z");
-    			add_location(img, file$1, 55, 8, 948);
+    			add_location(img, file$1, 65, 8, 1143);
     			attr_dev(div0, "class", "image svelte-19fue3z");
-    			add_location(div0, file$1, 54, 4, 920);
-    			attr_dev(p, "class", "svelte-19fue3z");
-    			add_location(p, file$1, 58, 8, 1013);
+    			add_location(div0, file$1, 64, 4, 1115);
+    			attr_dev(p1, "class", "svelte-19fue3z");
+    			add_location(p1, file$1, 68, 8, 1225);
     			attr_dev(div1, "class", "content svelte-19fue3z");
-    			add_location(div1, file$1, 57, 4, 983);
-    			add_location(button0, file$1, 61, 8, 1053);
-    			add_location(button1, file$1, 62, 8, 1091);
+    			add_location(div1, file$1, 67, 4, 1195);
+    			attr_dev(a, "href", a_href_value = "mailto:" + /*email*/ ctx[5]);
+    			add_location(a, file$1, 71, 8, 1278);
+    			add_location(button0, file$1, 72, 8, 1323);
+    			add_location(button1, file$1, 73, 8, 1361);
     			attr_dev(footer, "class", "svelte-19fue3z");
-    			add_location(footer, file$1, 60, 4, 1036);
+    			add_location(footer, file$1, 70, 4, 1261);
     			attr_dev(article, "class", "svelte-19fue3z");
-    			add_location(article, file$1, 49, 0, 830);
+    			add_location(article, file$1, 58, 0, 996);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -552,21 +593,48 @@ var app = (function () {
     			insert_dev(target, article, anchor);
     			append_dev(article, header);
     			append_dev(header, h1);
+    			append_dev(h1, t0);
     			append_dev(header, t1);
     			append_dev(header, h2);
-    			append_dev(article, t3);
+    			append_dev(h2, t2);
+    			append_dev(header, t3);
+    			append_dev(header, p0);
+    			append_dev(p0, t4);
+    			append_dev(article, t5);
     			append_dev(article, div0);
     			append_dev(div0, img);
-    			append_dev(article, t4);
+    			append_dev(article, t6);
     			append_dev(article, div1);
-    			append_dev(div1, p);
-    			append_dev(article, t5);
+    			append_dev(div1, p1);
+    			append_dev(p1, t7);
+    			append_dev(article, t8);
     			append_dev(article, footer);
+    			append_dev(footer, a);
+    			append_dev(a, t9);
+    			append_dev(footer, t10);
     			append_dev(footer, button0);
-    			append_dev(footer, t7);
+    			append_dev(footer, t12);
     			append_dev(footer, button1);
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*title*/ 1) set_data_dev(t0, /*title*/ ctx[0]);
+    			if (dirty & /*subtitle*/ 2) set_data_dev(t2, /*subtitle*/ ctx[1]);
+    			if (dirty & /*address*/ 16) set_data_dev(t4, /*address*/ ctx[4]);
+
+    			if (dirty & /*imageUrl*/ 4 && !src_url_equal(img.src, img_src_value = /*imageUrl*/ ctx[2])) {
+    				attr_dev(img, "src", img_src_value);
+    			}
+
+    			if (dirty & /*title*/ 1) {
+    				attr_dev(img, "alt", /*title*/ ctx[0]);
+    			}
+
+    			if (dirty & /*description*/ 8) set_data_dev(t7, /*description*/ ctx[3]);
+
+    			if (dirty & /*email*/ 32 && a_href_value !== (a_href_value = "mailto:" + /*email*/ ctx[5])) {
+    				attr_dev(a, "href", a_href_value);
+    			}
+    		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
@@ -585,22 +653,94 @@ var app = (function () {
     	return block;
     }
 
-    function instance$1($$self, $$props) {
+    function instance$1($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('MeetupItem', slots, []);
-    	const writable_props = [];
+    	let { title } = $$props;
+    	let { subtitle } = $$props;
+    	let { imageUrl } = $$props;
+    	let { description } = $$props;
+    	let { address } = $$props;
+    	let { email } = $$props;
+
+    	$$self.$$.on_mount.push(function () {
+    		if (title === undefined && !('title' in $$props || $$self.$$.bound[$$self.$$.props['title']])) {
+    			console.warn("<MeetupItem> was created without expected prop 'title'");
+    		}
+
+    		if (subtitle === undefined && !('subtitle' in $$props || $$self.$$.bound[$$self.$$.props['subtitle']])) {
+    			console.warn("<MeetupItem> was created without expected prop 'subtitle'");
+    		}
+
+    		if (imageUrl === undefined && !('imageUrl' in $$props || $$self.$$.bound[$$self.$$.props['imageUrl']])) {
+    			console.warn("<MeetupItem> was created without expected prop 'imageUrl'");
+    		}
+
+    		if (description === undefined && !('description' in $$props || $$self.$$.bound[$$self.$$.props['description']])) {
+    			console.warn("<MeetupItem> was created without expected prop 'description'");
+    		}
+
+    		if (address === undefined && !('address' in $$props || $$self.$$.bound[$$self.$$.props['address']])) {
+    			console.warn("<MeetupItem> was created without expected prop 'address'");
+    		}
+
+    		if (email === undefined && !('email' in $$props || $$self.$$.bound[$$self.$$.props['email']])) {
+    			console.warn("<MeetupItem> was created without expected prop 'email'");
+    		}
+    	});
+
+    	const writable_props = ['title', 'subtitle', 'imageUrl', 'description', 'address', 'email'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<MeetupItem> was created with unknown prop '${key}'`);
     	});
 
-    	return [];
+    	$$self.$$set = $$props => {
+    		if ('title' in $$props) $$invalidate(0, title = $$props.title);
+    		if ('subtitle' in $$props) $$invalidate(1, subtitle = $$props.subtitle);
+    		if ('imageUrl' in $$props) $$invalidate(2, imageUrl = $$props.imageUrl);
+    		if ('description' in $$props) $$invalidate(3, description = $$props.description);
+    		if ('address' in $$props) $$invalidate(4, address = $$props.address);
+    		if ('email' in $$props) $$invalidate(5, email = $$props.email);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		title,
+    		subtitle,
+    		imageUrl,
+    		description,
+    		address,
+    		email
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ('title' in $$props) $$invalidate(0, title = $$props.title);
+    		if ('subtitle' in $$props) $$invalidate(1, subtitle = $$props.subtitle);
+    		if ('imageUrl' in $$props) $$invalidate(2, imageUrl = $$props.imageUrl);
+    		if ('description' in $$props) $$invalidate(3, description = $$props.description);
+    		if ('address' in $$props) $$invalidate(4, address = $$props.address);
+    		if ('email' in $$props) $$invalidate(5, email = $$props.email);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [title, subtitle, imageUrl, description, address, email];
     }
 
     class MeetupItem extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {});
+
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+    			title: 0,
+    			subtitle: 1,
+    			imageUrl: 2,
+    			description: 3,
+    			address: 4,
+    			email: 5
+    		});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -608,6 +748,54 @@ var app = (function () {
     			options,
     			id: create_fragment$1.name
     		});
+    	}
+
+    	get title() {
+    		throw new Error("<MeetupItem>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set title(value) {
+    		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get subtitle() {
+    		throw new Error("<MeetupItem>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set subtitle(value) {
+    		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get imageUrl() {
+    		throw new Error("<MeetupItem>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set imageUrl(value) {
+    		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get description() {
+    		throw new Error("<MeetupItem>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set description(value) {
+    		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get address() {
+    		throw new Error("<MeetupItem>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set address(value) {
+    		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get email() {
+    		throw new Error("<MeetupItem>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set email(value) {
+    		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
@@ -624,7 +812,18 @@ var app = (function () {
     function create_each_block(ctx) {
     	let meetupitem;
     	let current;
-    	meetupitem = new MeetupItem({ $$inline: true });
+
+    	meetupitem = new MeetupItem({
+    			props: {
+    				title: /*meetup*/ ctx[1].title,
+    				subtitle: /*meetup*/ ctx[1].subtitle,
+    				description: /*meetup*/ ctx[1].description,
+    				imageUrl: /*meetup*/ ctx[1].imageUrl,
+    				address: /*meetup*/ ctx[1].address,
+    				email: /*meetup*/ ctx[1].contactEmail
+    			},
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
@@ -634,6 +833,7 @@ var app = (function () {
     			mount_component(meetupitem, target, anchor);
     			current = true;
     		},
+    		p: noop,
     		i: function intro(local) {
     			if (current) return;
     			transition_in(meetupitem.$$.fragment, local);
@@ -673,6 +873,10 @@ var app = (function () {
     		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
     	}
 
+    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
+    		each_blocks[i] = null;
+    	});
+
     	const block = {
     		c: function create() {
     			create_component(header.$$.fragment);
@@ -703,7 +907,35 @@ var app = (function () {
 
     			current = true;
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*meetups*/ 1) {
+    				each_value = /*meetups*/ ctx[0];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    						transition_in(each_blocks[i], 1);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						transition_in(each_blocks[i], 1);
+    						each_blocks[i].m(section, null);
+    					}
+    				}
+
+    				group_outros();
+
+    				for (i = each_value.length; i < each_blocks.length; i += 1) {
+    					out(i);
+    				}
+
+    				check_outros();
+    			}
+    		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(header.$$.fragment, local);
