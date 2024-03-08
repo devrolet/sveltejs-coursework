@@ -1,0 +1,17 @@
+COMPONENT LIFECYCLE
+
+LIFECYCLE HOOKS
+
+2 types in Svelte CREATION AND UPDATES
+
+CREATION
+
+<script> Executes - Basic Initilization work (think ngInit)
+onMount() - More complex init work (i.e. data fetching)
+onDestroy() - Cleanup work
+
+UPDATES
+
+beforeUpdate() - Save (DOM) state before Svelte updates it 
+afterUpdate() - Manually update DOM/view after Svelte update 
+tick() - Await Svelte's DOM update 
