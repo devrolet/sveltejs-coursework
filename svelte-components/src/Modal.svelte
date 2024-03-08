@@ -1,5 +1,5 @@
 <script>
-    export let content;
+    // export let content;
 </script>
 
 <style>
@@ -30,6 +30,4 @@
 
 <div class="backdrop"></div>
 <div class="modal">
-    <!-- Allows use of HTML content on component -->
-    {@html content}
 </div>

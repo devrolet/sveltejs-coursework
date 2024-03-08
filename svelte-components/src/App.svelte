@@ -34,4 +34,6 @@
 	on:delete={deleteProduct} />
 {/each}
 <!-- Inefficient way of outputting html -->
-<Modal content="<h1>Hi</h1>" />
+<Modal>
+	<h1>Hello</h1>
+</Modal>
