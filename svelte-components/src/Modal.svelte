@@ -30,4 +30,6 @@
 
 <div class="backdrop"></div>
 <div class="modal">
+    <!-- Could be <slot></slot> as well-->
+    <slot /> 
 </div>

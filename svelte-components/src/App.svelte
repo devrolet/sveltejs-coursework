@@ -37,3 +37,8 @@
 <Modal>
 	<h1>Hello</h1>
 </Modal>
+<!-- Can have as many as you need -->
+<!-- <Modal>
+	<h1>Hello</h1>
+	<h2>This is really cool</h2>
+</Modal> -->
