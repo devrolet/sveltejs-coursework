@@ -1,9 +1,15 @@
-<script>
-    import  { createEventDispatcher } from 'svelte';
+<script> // FIRST STEP OF LIFECYCLE
+    import  { createEventDispatcher, onMount, onDestroy } from 'svelte';
 
     let dispatch = createEventDispatcher();
 
     let agreed = false;
+
+    // Could call a function or run anon func
+    onMount(() => console.log('On Mount'));
+    onDestroy(() => console.log('On Destroy'));
+
+    console.log('Script executed');
 </script>
 
 <style>
@@ -23,7 +29,7 @@
         top: 10vh;
         left: 10%;
         width: 80%;
-        max-height: 80vh;
+        max-height: 15vh;
         background: white;
         border-radius: 5px;
         z-index: 100;
