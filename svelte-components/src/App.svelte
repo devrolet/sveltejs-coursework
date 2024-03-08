@@ -33,7 +33,7 @@
 	on:add-to-cart={addToCart}
 	on:delete={deleteProduct} />
 {/each}
-<!-- Inefficient way of outputting html -->
+<!-- Using component to output multiple slots -->
 <Modal>
 	<h1 slot="header">Hello</h1>
 	<p>This works well!</p>
