@@ -1,5 +1,5 @@
 <script>
-    // export let content;
+    export let content;
 </script>
 
 <style>
@@ -42,4 +42,10 @@
         <!-- Any slot without a name becomes default slot or any data that doesn't have a name -->
         <slot />
     </div>
+    <footer>
+        <slot name="footer">
+            <!-- Default set to Close text but can be changed on parent component -->
+            <button>Close</button> 
+        </slot>
+    </footer>
 </div>

@@ -37,6 +37,7 @@
 <Modal>
 	<h1 slot="header">Hello</h1>
 	<p>This works well!</p>
+	<button slot="footer">Confirm</button>
 </Modal>
 <!-- Can have as many as you need -->
 <!-- <Modal>
