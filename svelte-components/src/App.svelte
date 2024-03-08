@@ -14,7 +14,9 @@
 			price: 19.99,
 			bestseller: true
 		}
-	]
+	];
+
+	let showModal = false;
 
 	// Extract event data to pass data up the chain
 	function addToCart(event) {
@@ -33,14 +35,15 @@
 	on:add-to-cart={addToCart}
 	on:delete={deleteProduct} />
 {/each}
+
+<!-- Inline version of calling the on:click event -->
+<button on:click="{() => showModal = true}">Show Modal</button>
+
 <!-- Using component to output multiple slots -->
+{#if showModal}
 <Modal>
 	<h1 slot="header">Hello</h1>
 	<p>This works well!</p>
 	<button slot="footer">Confirm</button>
 </Modal>
-<!-- Can have as many as you need -->
-<!-- <Modal>
-	<h1>Hello</h1>
-	<h2>This is really cool</h2>
-</Modal> -->
+{/if}
