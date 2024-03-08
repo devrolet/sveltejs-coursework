@@ -1,5 +1,9 @@
 <script>
-    export let content;
+    import  { createEventDispatcher } from 'svelte';
+
+    let dispatch = createEventDispatcher();
+
+    let agreed = false;
 </script>
 
 <style>
@@ -32,7 +36,7 @@
     }
 </style>
 
-<div class="backdrop"></div>
+<div class="backdrop" on:click="{() => dispatch('cancel')}"></div>
 <div class="modal">
     <!-- Could be <slot></slot> as well-->
     <header>
@@ -42,10 +46,14 @@
         <!-- Any slot without a name becomes default slot or any data that doesn't have a name -->
         <slot />
     </div>
+    <div class="disclaimer">
+        <p>Before you close, you need to agree to our terms.</p>
+        <button on:click="{() => agreed = true}">Agree</button>
+    </div>
     <footer>
-        <slot name="footer">
+        <slot name="footer" didAgree={agreed}>
             <!-- Default set to Close text but can be changed on parent component -->
-            <button>Close</button> 
+            <button on:click="{() => dispatch('close')}" disabled={!agreed}>Close</button> 
         </slot>
     </footer>
 </div>

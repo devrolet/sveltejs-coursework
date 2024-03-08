@@ -17,6 +17,7 @@
 	];
 
 	let showModal = false;
+	let closable = false
 
 	// Extract event data to pass data up the chain
 	function addToCart(event) {
@@ -41,9 +42,14 @@
 
 <!-- Using component to output multiple slots -->
 {#if showModal}
-<Modal>
+<!-- let: is a directive in SvelteJS -->
+<Modal 
+	on:cancel="{() => showModal = false}" 
+	on:close="{() => showModal = false}"
+	let:didAgree={closable}>
 	<h1 slot="header">Hello</h1>
 	<p>This works well!</p>
-	<button slot="footer">Confirm</button>
+	<!-- Button provided here so it'll take precedence. Default would work if this wasn't here -->
+	<button slot="footer" on:click={() => showModal = false} disabled={!closable}>Confirm</button>
 </Modal>
 {/if}
