@@ -35,7 +35,8 @@
 {/each}
 <!-- Inefficient way of outputting html -->
 <Modal>
-	<h1>Hello</h1>
+	<h1 slot="header">Hello</h1>
+	<p>This works well!</p>
 </Modal>
 <!-- Can have as many as you need -->
 <!-- <Modal>
