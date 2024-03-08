@@ -10,7 +10,8 @@
 		{
 			id: 'p2',
 			title: 'A Book About Nothing',
-			price: 19.99
+			price: 19.99,
+			bestseller: true
 		}
 	]
 

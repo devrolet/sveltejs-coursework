@@ -3,8 +3,8 @@
 
     export let title;
     export let price;
-    // still works even though it isn't used, there will be a warning
-    export let bestseller;
+    // still works even though it isn't used, there will be a warning: adding a value makes it optional
+    export let bestseller = false;
 
     const dispatch = createEventDispatcher();
 
