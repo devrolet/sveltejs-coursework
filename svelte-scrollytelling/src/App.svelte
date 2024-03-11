@@ -1,9 +1,11 @@
 <script>
-
+    import ScrollManager from "./components/ScrollManager.svelte";
 </script>
+
+<main>
+    <ScrollManager />
+</main>
 
 <style>
 
 </style>
-
-<h1>SVELTE SCROLLYTELLING</h1>
