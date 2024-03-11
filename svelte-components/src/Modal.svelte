@@ -1,13 +1,27 @@
 <script> // FIRST STEP OF LIFECYCLE
-    import  { createEventDispatcher, onMount, onDestroy } from 'svelte';
+    import  { createEventDispatcher, onMount, onDestroy, beforeUpdate, afterUpdate } from 'svelte';
 
     let dispatch = createEventDispatcher();
 
     let agreed = false;
+    let autoscroll = false;
 
     // Could call a function or run anon func
     onMount(() => console.log('On Mount'));
     onDestroy(() => console.log('On Destroy'));
+
+    // Add functions or anon
+    beforeUpdate(() => {
+        console.log('Before Update');
+        autoscroll = agreed;
+    });
+    afterUpdate(() => {
+        console.log('After Update');
+        if(autoscroll) {
+            const modal = document.querySelector('.modal');
+            modal.scrollTo(0, modal.scrollHeight);
+        }
+    });
 
     console.log('Script executed');
 </script>
