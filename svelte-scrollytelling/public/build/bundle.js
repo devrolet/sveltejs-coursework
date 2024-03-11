@@ -345,7 +345,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			h1 = element("h1");
-    			h1.textContent = "Time for a project!";
+    			h1.textContent = "SVELTE SCROLLYTELLING";
     			add_location(h1, file, 8, 0, 40);
     		},
     		l: function claim(nodes) {

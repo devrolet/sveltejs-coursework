@@ -6,4 +6,4 @@
 
 </style>
 
-<h1>Time for a project!</h1>
+<h1>SVELTE SCROLLYTELLING</h1>
