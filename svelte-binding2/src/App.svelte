@@ -9,6 +9,9 @@
 	let favColor = 'red';
 	let favTeam = ['Kings'];
 	let singleFavColor = 'black'
+	let usernameInput;
+	let someDiv;
+	let newCanvas;
 
 	$: console.log(val);
 	$: console.log(selectionOption);
@@ -23,6 +26,10 @@
 	let saveData = () => {
 		// Vanilla JS solution
 		// console.log(document.querySelector('#username').value);
+		console.log(usernameInput.value);
+		console.dir(usernameInput);
+		console.dir(someDiv);
+		console.dir(newCanvas);
 	};
 </script>
 
@@ -78,6 +85,10 @@
 	<option value="blue">Blue</option>
 	<option value="black">Black</option>
 </select>
-
-<input type="text" id="username">
+<!-- Bind to element reference -->
+<input type="text" bind:this={usernameInput}>
 <button on:click="{saveData}">Save Data</button>
+
+<div bind:this={someDiv}></div>
+
+<canvas bind:this={newCanvas}></canvas>
