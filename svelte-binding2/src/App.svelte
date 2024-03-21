@@ -19,6 +19,11 @@
 	$: console.log(singleFavColor);
 
     let setValue = event => val = event.target.setValue;
+
+	let saveData = () => {
+		// Vanilla JS solution
+		// console.log(document.querySelector('#username').value);
+	};
 </script>
 
 <!-- <h1>Bindings & Forms</h1>
@@ -74,4 +79,5 @@
 	<option value="black">Black</option>
 </select>
 
-
+<input type="text" id="username">
+<button on:click="{saveData}">Save Data</button>
