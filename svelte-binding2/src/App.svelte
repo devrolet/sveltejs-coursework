@@ -4,7 +4,7 @@
 
 	let selectionOption = 1;
     let val = 'Malichi';
-
+	let price = 0;
 	$: console.log(val);
 	$: console.log(selectionOption)
 
@@ -14,4 +14,11 @@
 <!-- <h1>Bindings & Forms</h1>
 <input type="text" bind:value={val}> -->
 <CustomInput bind:val={val} />
+
 <Toggle bind:chosenOption={selectionOption} />
+
+<input 
+	type="number" 
+	value="{price}" 
+	on:input={event => console.log(event.target.value)}
+>
