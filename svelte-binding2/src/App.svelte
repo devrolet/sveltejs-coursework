@@ -8,6 +8,7 @@
 	let agreed;
 	let favColor = 'red';
 	let favTeam = ['Kings'];
+	let singleFavColor = 'black'
 
 	$: console.log(val);
 	$: console.log(selectionOption);
@@ -15,6 +16,7 @@
 	$: console.log(agreed);
 	$: console.log(favColor);
 	$: console.log(favTeam);
+	$: console.log(singleFavColor);
 
     let setValue = event => val = event.target.setValue;
 </script>
@@ -29,7 +31,7 @@
 	type="number" 
 	bind:value="{price}" />
 
-<label for="">
+<label>
 	<!-- Bind to a checkbox -->
 	<input type="checkbox" bind:checked={agreed} />
 	Agree to Terms?
@@ -37,32 +39,39 @@
 
 <h1>Favorite Color?</h1>
 <!-- Bind to radio button. Note: If a value is selected beforehand i.e. value="red" the DOM will select that color as a default -->
-<label for="">
+<label>
 	<input type="radio" name="color" bind:group={favColor} value="red">
 	Red
 </label>
-<label for="">
+<label>
 	<input type="radio" name="color" bind:group={favColor} value="green">
 	Green
 </label>
-<label for="">
+<label>
 	<input type="radio" name="color" bind:group={favColor} value="blue">
 	Blue
 </label>
 
 <h1>Favorite Team?</h1>
 <!-- Bind to radio button. Note: If a value is selected beforehand i.e. value="red" the DOM will select that color as a default -->
-<label for="">
+<label>
 	<input type="checkbox" name="color" bind:group={favTeam} value="Kings">
 	Kings
 </label>
-<label for="">
+<label>
 	<input type="checkbox" name="color" bind:group={favTeam} value="Lakers">
 	Lakers
 </label>
-<label for="">
+<label>
 	<input type="checkbox" name="color" bind:group={favTeam} value="Bulls">
 	Bulls
 </label>
+
+
+<select bind:value={singleFavColor}>
+	<option value="green">Green</option>
+	<option value="blue">Blue</option>
+	<option value="black">Black</option>
+</select>
 
 
