@@ -7,6 +7,7 @@
 	let price = 0;
 	$: console.log(val);
 	$: console.log(selectionOption)
+	$: console.log(price);
 
     let setValue = event => val = event.target.setValue;
 </script>
@@ -19,6 +20,5 @@
 
 <input 
 	type="number" 
-	value="{price}" 
-	on:input={event => console.log(event.target.value)}
+	bind:value="{price}" 
 >
