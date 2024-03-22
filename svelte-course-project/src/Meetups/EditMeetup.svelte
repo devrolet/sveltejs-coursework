@@ -6,17 +6,11 @@
     import { isEmpty, isValidEmail } from '../helpers/validation.js';
 
     let title = '';
-    let titleValid = false
     let subtitle = '';
-    let subtitleValid = false;
     let address = '';
-    let addressValid = false;
     let email = '';
-    let emailValid = false;
     let description = '';
-    let descriptionValid = false;
     let imageUrl = '';
-    let imageURLValid = false;
     let formIsValid = false;
 
     const dispatch = createEventDispatcher();
