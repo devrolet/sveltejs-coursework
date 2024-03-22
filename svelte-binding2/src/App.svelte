@@ -12,6 +12,7 @@
 	let usernameInput;
 	let someDiv;
 	let newCanvas;
+	let customInput;
 
 	$: console.log(val);
 	$: console.log(selectionOption);
@@ -20,6 +21,7 @@
 	$: console.log(favColor);
 	$: console.log(favTeam);
 	$: console.log(singleFavColor);
+	$: console.log(customInput);
 
     let setValue = event => val = event.target.setValue;
 
@@ -30,12 +32,13 @@
 		console.dir(usernameInput);
 		console.dir(someDiv);
 		console.dir(newCanvas);
+		customInput.empty();
 	};
 </script>
 
 <!-- <h1>Bindings & Forms</h1>
 <input type="text" bind:value={val}> -->
-<CustomInput bind:val={val} />
+<CustomInput bind:val={val} bind:this={customInput} />
 
 <Toggle bind:chosenOption={selectionOption} />
 
