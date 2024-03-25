@@ -862,7 +862,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file$3 = "src/Cart/CartItem.svelte";
 
-    // (55:2) <Button mode="outline" on:click={displayDescription}>
+    // (59:2) <Button mode="outline" on:click={displayDescription}>
     function create_default_slot_1(ctx) {
     	let t_value = (/*showDescription*/ ctx[2]
     	? 'Hide Description'
@@ -891,14 +891,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(55:2) <Button mode=\\\"outline\\\" on:click={displayDescription}>",
+    		source: "(59:2) <Button mode=\\\"outline\\\" on:click={displayDescription}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (58:2) <Button on:click={removeFromCart}>
+    // (62:2) <Button on:click={removeFromCart}>
     function create_default_slot$2(ctx) {
     	let t;
 
@@ -918,14 +918,14 @@ var app = (function () {
     		block,
     		id: create_default_slot$2.name,
     		type: "slot",
-    		source: "(58:2) <Button on:click={removeFromCart}>",
+    		source: "(62:2) <Button on:click={removeFromCart}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (59:2) {#if showDescription}
+    // (63:2) {#if showDescription}
     function create_if_block$1(ctx) {
     	let p;
     	let t;
@@ -934,7 +934,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			t = text(/*description*/ ctx[3]);
-    			add_location(p, file$3, 59, 4, 1227);
+    			add_location(p, file$3, 63, 4, 1385);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -952,7 +952,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(59:2) {#if showDescription}",
+    		source: "(63:2) {#if showDescription}",
     		ctx
     	});
 
@@ -1010,11 +1010,11 @@ var app = (function () {
     			t5 = space();
     			if (if_block) if_block.c();
     			attr_dev(h1, "class", "svelte-1td7xux");
-    			add_location(h1, file$3, 52, 2, 969);
+    			add_location(h1, file$3, 56, 2, 1127);
     			attr_dev(h2, "class", "svelte-1td7xux");
-    			add_location(h2, file$3, 53, 2, 988);
+    			add_location(h2, file$3, 57, 2, 1146);
     			attr_dev(li, "class", "svelte-1td7xux");
-    			add_location(li, file$3, 51, 0, 962);
+    			add_location(li, file$3, 55, 0, 1120);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1039,14 +1039,14 @@ var app = (function () {
     			if (!current || dirty & /*price*/ 2) set_data_dev(t2, /*price*/ ctx[1]);
     			const button0_changes = {};
 
-    			if (dirty & /*$$scope, showDescription*/ 260) {
+    			if (dirty & /*$$scope, showDescription*/ 132) {
     				button0_changes.$$scope = { dirty, ctx };
     			}
 
     			button0.$set(button0_changes);
     			const button1_changes = {};
 
-    			if (dirty & /*$$scope*/ 256) {
+    			if (dirty & /*$$scope*/ 128) {
     				button1_changes.$$scope = { dirty, ctx };
     			}
 
@@ -1103,15 +1103,20 @@ var app = (function () {
     	let { id } = $$props;
     	let showDescription = false;
     	let description = "Not available!";
-    	let fetchedProducts = [];
 
-    	products.subscribe(prods => {
-    		fetchedProducts = prods;
-    	});
-
+    	// let fetchedProducts = [];
+    	// products.subscribe(prods => {
+    	//   fetchedProducts = prods;
+    	// })
     	function displayDescription() {
     		$$invalidate(2, showDescription = !showDescription);
-    		$$invalidate(3, description = fetchedProducts.find(p => p.id === id).description);
+
+    		// description = fetchedProducts.find(p => p.id === id).description;
+    		const unsubscribe = products.subscribe(prods => {
+    			$$invalidate(3, description = prods.find(p => p.id === id).description);
+    		});
+
+    		unsubscribe();
     	}
 
     	function removeFromCart() {
@@ -1157,7 +1162,6 @@ var app = (function () {
     		id,
     		showDescription,
     		description,
-    		fetchedProducts,
     		displayDescription,
     		removeFromCart
     	});
@@ -1168,7 +1172,6 @@ var app = (function () {
     		if ('id' in $$props) $$invalidate(6, id = $$props.id);
     		if ('showDescription' in $$props) $$invalidate(2, showDescription = $$props.showDescription);
     		if ('description' in $$props) $$invalidate(3, description = $$props.description);
-    		if ('fetchedProducts' in $$props) fetchedProducts = $$props.fetchedProducts;
     	};
 
     	if ($$props && "$$inject" in $$props) {
