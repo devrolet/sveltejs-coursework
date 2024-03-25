@@ -727,6 +727,9 @@ var app = (function () {
         subscribe: cart.subscribe,
         addItem: (item) => {
           cart.update(items => {
+            if(items.find(i => i.id === item.id)) {
+              return [...items];
+            }
             return [...items, item];
           });
         },
