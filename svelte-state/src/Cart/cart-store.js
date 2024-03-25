@@ -4,13 +4,13 @@ import { writable } from 'svelte/store';
 // always pass a default value (obj, array, num, string, function)
 const cart = writable([
     {
-        id: "p1",
+        id: "p3",
         title: "Test",
         price: 9.99
       },
       {
-        id: "p2",
-        title: "Test",
+        id: "p4",
+        title: "New Test",
         price: 9.99
       }
 ]);
