@@ -1,7 +1,13 @@
 <script>
   import { onDestroy } from 'svelte';
+  import { timer } from "../timer-store.js";
   import cartItems from './cart-store.js';
   import CartItem from "./CartItem.svelte";
+
+
+  let unsubscribe = timer.subscribe(count => {
+    console.log('Cart: ', count);
+  })
 
   // AUTOSUBSCRIPTIONS IN SVELTE.JS
 
@@ -14,11 +20,11 @@
   // });
 
   // // Always unsubscribe from subscriptions to prevent memory leaks
-  // onDestroy(() => {
-  //   if(unsubscribe) {
-  //     unsubscribe();
-  //   }
-  // })
+  onDestroy(() => {
+    if(unsubscribe) {
+      unsubscribe();
+    }
+  })
 
   // export let items = [
   //   {
