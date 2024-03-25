@@ -1150,11 +1150,128 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$2 = "src/Cart/Cart.svelte";
 
+    function get_each_context$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[1] = list[i];
+    	return child_ctx;
+    }
+
+    // (46:4) {:else}
+    function create_else_block(ctx) {
+    	let p;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "No items in cart yet!";
+    			add_location(p, file$2, 46, 6, 861);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(46:4) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (44:4) {#each items as item (item.id)}
+    function create_each_block$1(key_1, ctx) {
+    	let first;
+    	let cartitem;
+    	let current;
+
+    	cartitem = new CartItem({
+    			props: {
+    				id: /*item*/ ctx[1].id,
+    				title: /*item*/ ctx[1].title,
+    				price: /*item*/ ctx[1].price
+    			},
+    			$$inline: true
+    		});
+
+    	const block = {
+    		key: key_1,
+    		first: null,
+    		c: function create() {
+    			first = empty();
+    			create_component(cartitem.$$.fragment);
+    			this.first = first;
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, first, anchor);
+    			mount_component(cartitem, target, anchor);
+    			current = true;
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			const cartitem_changes = {};
+    			if (dirty & /*items*/ 1) cartitem_changes.id = /*item*/ ctx[1].id;
+    			if (dirty & /*items*/ 1) cartitem_changes.title = /*item*/ ctx[1].title;
+    			if (dirty & /*items*/ 1) cartitem_changes.price = /*item*/ ctx[1].price;
+    			cartitem.$set(cartitem_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(cartitem.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(cartitem.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(first);
+    			destroy_component(cartitem, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$1.name,
+    		type: "each",
+    		source: "(44:4) {#each items as item (item.id)}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     function create_fragment$3(ctx) {
     	let section;
     	let h1;
     	let t1;
     	let ul;
+    	let each_blocks = [];
+    	let each_1_lookup = new Map();
+    	let current;
+    	let each_value = /*items*/ ctx[0];
+    	validate_each_argument(each_value);
+    	const get_key = ctx => /*item*/ ctx[1].id;
+    	validate_each_keys(ctx, each_value, get_each_context$1, get_key);
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context$1(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block$1(key, child_ctx));
+    	}
+
+    	let each_1_else = null;
+
+    	if (!each_value.length) {
+    		each_1_else = create_else_block(ctx);
+    	}
 
     	const block = {
     		c: function create() {
@@ -1163,11 +1280,20 @@ var app = (function () {
     			h1.textContent = "Cart";
     			t1 = space();
     			ul = element("ul");
-    			add_location(h1, file$2, 39, 2, 677);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			if (each_1_else) {
+    				each_1_else.c();
+    			}
+
+    			add_location(h1, file$2, 41, 2, 716);
     			attr_dev(ul, "class", "svelte-1c2znv1");
-    			add_location(ul, file$2, 40, 2, 693);
+    			add_location(ul, file$2, 42, 2, 732);
     			attr_dev(section, "class", "svelte-1c2znv1");
-    			add_location(section, file$2, 38, 0, 665);
+    			add_location(section, file$2, 40, 0, 704);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1177,12 +1303,64 @@ var app = (function () {
     			append_dev(section, h1);
     			append_dev(section, t1);
     			append_dev(section, ul);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(ul, null);
+    				}
+    			}
+
+    			if (each_1_else) {
+    				each_1_else.m(ul, null);
+    			}
+
+    			current = true;
     		},
-    		p: noop,
-    		i: noop,
-    		o: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*items*/ 1) {
+    				each_value = /*items*/ ctx[0];
+    				validate_each_argument(each_value);
+    				group_outros();
+    				validate_each_keys(ctx, each_value, get_each_context$1, get_key);
+    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, ul, outro_and_destroy_block, create_each_block$1, null, get_each_context$1);
+    				check_outros();
+
+    				if (!each_value.length && each_1_else) {
+    					each_1_else.p(ctx, dirty);
+    				} else if (!each_value.length) {
+    					each_1_else = create_else_block(ctx);
+    					each_1_else.c();
+    					each_1_else.m(ul, null);
+    				} else if (each_1_else) {
+    					each_1_else.d(1);
+    					each_1_else = null;
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(section);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].d();
+    			}
+
+    			if (each_1_else) each_1_else.d();
     		}
     	};
 
@@ -1200,9 +1378,12 @@ var app = (function () {
     function instance$3($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Cart', slots, []);
+    	let items;
 
-    	cart.subscribe(items => {
-    		console.log(items);
+    	// Subscribe to the store with subscribe method (Is this like NG Observables or maybe services?)
+    	cart.subscribe(its => {
+    		$$invalidate(0, items = its);
+    		console.log('Items: ', items);
     	});
 
     	const writable_props = [];
@@ -1211,8 +1392,17 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1$1.warn(`<Cart> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ cartItems: cart, CartItem });
-    	return [];
+    	$$self.$capture_state = () => ({ cartItems: cart, CartItem, items });
+
+    	$$self.$inject_state = $$props => {
+    		if ('items' in $$props) $$invalidate(0, items = $$props.items);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [items];
     }
 
     class Cart extends SvelteComponentDev {

@@ -2,9 +2,11 @@
   import cartItems from './cart-store.js';
   import CartItem from "./CartItem.svelte";
 
+  let items;
   // Subscribe to the store with subscribe method (Is this like NG Observables or maybe services?)
-  cartItems.subscribe(items => {
-    console.log(items);
+  cartItems.subscribe(its => {
+    items = its;
+    console.log('Items: ', items);
   });
 
   // export let items = [
@@ -39,10 +41,10 @@
 <section>
   <h1>Cart</h1>
   <ul>
-    <!-- {#each items as item (item.id)}
+    {#each items as item (item.id)}
       <CartItem id={item.id} title={item.title} price={item.price} />
     {:else}
       <p>No items in cart yet!</p>
-    {/each} -->
+    {/each}
   </ul>
 </section>
