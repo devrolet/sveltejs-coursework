@@ -707,7 +707,10 @@ var app = (function () {
 
     // Create store by calling the writable function and giving it a var
     // always pass a default value (obj, array, num, string, function)
-    const cart = writable([
+
+    // Going with customCart = then everything in the curly braces works as well you just have to export below
+    function createCart() {
+      const cart = writable([
         {
             id: "p3",
             title: "Test",
@@ -718,7 +721,27 @@ var app = (function () {
             title: "New Test",
             price: 9.99
           }
-    ]);
+      ]);
+
+      return {
+        subscribe: cart.subscribe,
+        addItem: (item) => {
+          cart.update(items => {
+            return [...items, item];
+          });
+        },
+        removeItem: (id) => {
+          cart.update(items => {
+            return items.filter(i => i.id !== id);
+          });
+        }
+      }
+    }
+
+    // Use the store outside of the file by exporting it as either default or named export
+    var cartItems = createCart();
+    // Export if a variable was used instead of a function
+    // export default customCart
 
     const products = writable(
         [
@@ -889,7 +912,7 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$4 = "src/Cart/CartItem.svelte";
 
-    // (59:2) <Button mode="outline" on:click={displayDescription}>
+    // (57:2) <Button mode="outline" on:click={displayDescription}>
     function create_default_slot_1(ctx) {
     	let t_value = (/*showDescription*/ ctx[2]
     	? 'Hide Description'
@@ -918,14 +941,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(59:2) <Button mode=\\\"outline\\\" on:click={displayDescription}>",
+    		source: "(57:2) <Button mode=\\\"outline\\\" on:click={displayDescription}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (62:2) <Button on:click={removeFromCart}>
+    // (60:2) <Button on:click={removeFromCart}>
     function create_default_slot$2(ctx) {
     	let t;
 
@@ -945,14 +968,14 @@ var app = (function () {
     		block,
     		id: create_default_slot$2.name,
     		type: "slot",
-    		source: "(62:2) <Button on:click={removeFromCart}>",
+    		source: "(60:2) <Button on:click={removeFromCart}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (63:2) {#if showDescription}
+    // (61:2) {#if showDescription}
     function create_if_block$1(ctx) {
     	let p;
     	let t;
@@ -961,7 +984,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			t = text(/*description*/ ctx[3]);
-    			add_location(p, file$4, 63, 4, 1385);
+    			add_location(p, file$4, 61, 4, 1331);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -979,7 +1002,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(63:2) {#if showDescription}",
+    		source: "(61:2) {#if showDescription}",
     		ctx
     	});
 
@@ -1037,11 +1060,11 @@ var app = (function () {
     			t5 = space();
     			if (if_block) if_block.c();
     			attr_dev(h1, "class", "svelte-1td7xux");
-    			add_location(h1, file$4, 56, 2, 1127);
+    			add_location(h1, file$4, 54, 2, 1073);
     			attr_dev(h2, "class", "svelte-1td7xux");
-    			add_location(h2, file$4, 57, 2, 1146);
+    			add_location(h2, file$4, 55, 2, 1092);
     			attr_dev(li, "class", "svelte-1td7xux");
-    			add_location(li, file$4, 55, 0, 1120);
+    			add_location(li, file$4, 53, 0, 1066);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1147,10 +1170,7 @@ var app = (function () {
     	}
 
     	function removeFromCart() {
-    		cart.update(items => {
-    			return items.filter(i => i.id !== id);
-    		});
-
+    		cartItems.removeItem(id);
     		console.log("Removing...");
     	}
 
@@ -1181,7 +1201,7 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
-    		cartItems: cart,
+    		cartItems,
     		products,
     		Button,
     		title,
@@ -1486,8 +1506,8 @@ var app = (function () {
 
     function instance$3($$self, $$props, $$invalidate) {
     	let $cartItems;
-    	validate_store(cart, 'cartItems');
-    	component_subscribe($$self, cart, $$value => $$invalidate(0, $cartItems = $$value));
+    	validate_store(cartItems, 'cartItems');
+    	component_subscribe($$self, cartItems, $$value => $$invalidate(0, $cartItems = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Cart', slots, []);
 
@@ -1518,7 +1538,7 @@ var app = (function () {
     	$$self.$capture_state = () => ({
     		onDestroy,
     		timer,
-    		cartItems: cart,
+    		cartItems,
     		CartItem,
     		unsubscribe,
     		$cartItems
@@ -1552,7 +1572,7 @@ var app = (function () {
     /* src/Products/Product.svelte generated by Svelte v3.59.2 */
     const file$2 = "src/Products/Product.svelte";
 
-    // (62:4) <Button on:click={addToCart}>
+    // (55:4) <Button on:click={addToCart}>
     function create_default_slot$1(ctx) {
     	let t;
 
@@ -1572,7 +1592,7 @@ var app = (function () {
     		block,
     		id: create_default_slot$1.name,
     		type: "slot",
-    		source: "(62:4) <Button on:click={addToCart}>",
+    		source: "(55:4) <Button on:click={addToCart}>",
     		ctx
     	});
 
@@ -1621,15 +1641,15 @@ var app = (function () {
     			div1 = element("div");
     			create_component(button.$$.fragment);
     			attr_dev(h1, "class", "svelte-9ht2za");
-    			add_location(h1, file$2, 56, 4, 1074);
+    			add_location(h1, file$2, 49, 4, 758);
     			attr_dev(h2, "class", "svelte-9ht2za");
-    			add_location(h2, file$2, 57, 4, 1095);
+    			add_location(h2, file$2, 50, 4, 779);
     			attr_dev(p, "class", "svelte-9ht2za");
-    			add_location(p, file$2, 58, 4, 1116);
-    			add_location(div0, file$2, 55, 2, 1064);
-    			add_location(div1, file$2, 60, 2, 1148);
+    			add_location(p, file$2, 51, 4, 800);
+    			add_location(div0, file$2, 48, 2, 748);
+    			add_location(div1, file$2, 53, 2, 832);
     			attr_dev(div2, "class", "product svelte-9ht2za");
-    			add_location(div2, file$2, 54, 0, 1040);
+    			add_location(div2, file$2, 47, 0, 724);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1697,14 +1717,7 @@ var app = (function () {
     	let { description } = $$props;
 
     	function addToCart() {
-    		// .set() overwrites the store with new data
-    		// cartItems.set([]);
-    		// .update - updates the store, takes a function as a value
-    		// TODO: do not use .push, it is not recognized by Svelte
-    		cart.update(items => {
-    			// Always copy the old data and add to it from there in Svelte
-    			return [...items, { id, title, price }];
-    		});
+    		cartItems.addItem({ id, title, price });
     	}
 
     	$$self.$$.on_mount.push(function () {
@@ -1739,7 +1752,7 @@ var app = (function () {
     	};
 
     	$$self.$capture_state = () => ({
-    		cartItems: cart,
+    		cartItems,
     		Button,
     		id,
     		title,

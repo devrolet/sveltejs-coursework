@@ -8,18 +8,11 @@
   export let description;
 
   function addToCart() {
-    // .set() overwrites the store with new data
-    // cartItems.set([]);
-
-    // .update - updates the store, takes a function as a value
-    // TODO: do not use .push, it is not recognized by Svelte
-    cartItems.update(items => {
-      // Always copy the old data and add to it from there in Svelte
-      return [...items, {
-        id: id,
-        title: title,
-        price: price,
-      }]
+    
+    cartItems.addItem({
+      id: id,
+      title: title,
+      price: price
     });
   }
 </script>
