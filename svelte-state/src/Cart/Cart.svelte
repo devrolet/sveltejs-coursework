@@ -3,19 +3,22 @@
   import cartItems from './cart-store.js';
   import CartItem from "./CartItem.svelte";
 
-  let items;
-  // Subscribe to the store with subscribe method (Is this like NG Observables or maybe services?)
-  let unsubscribe = cartItems.subscribe(its => {
-    items = its;
-    console.log('Items: ', items);
-  });
+  // AUTOSUBSCRIPTIONS IN SVELTE.JS
 
-  // Always unsubscribe from subscriptions to prevent memory leaks
-  onDestroy(() => {
-    if(unsubscribe) {
-      unsubscribe();
-    }
-  })
+
+  // let items;
+  // // Subscribe to the store with subscribe method (Is this like NG Observables or maybe services?)
+  // let unsubscribe = cartItems.subscribe(its => {
+  //   items = its;
+  //   console.log('Items: ', items);
+  // });
+
+  // // Always unsubscribe from subscriptions to prevent memory leaks
+  // onDestroy(() => {
+  //   if(unsubscribe) {
+  //     unsubscribe();
+  //   }
+  // })
 
   // export let items = [
   //   {
@@ -49,7 +52,8 @@
 <section>
   <h1>Cart</h1>
   <ul>
-    {#each items as item (item.id)}
+    <!-- AUTOSUBSCRIPTIONS IN SVELTE: Call your store variable preceded by $ for autosub -->
+    {#each $cartItems as item (item.id)}
       <CartItem id={item.id} title={item.title} price={item.price} />
     {:else}
       <p>No items in cart yet!</p>
