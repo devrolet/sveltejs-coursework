@@ -862,7 +862,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file$3 = "src/Cart/CartItem.svelte";
 
-    // (48:2) <Button mode="outline" on:click={displayDescription}>
+    // (55:2) <Button mode="outline" on:click={displayDescription}>
     function create_default_slot_1(ctx) {
     	let t_value = (/*showDescription*/ ctx[2]
     	? 'Hide Description'
@@ -891,14 +891,14 @@ var app = (function () {
     		block,
     		id: create_default_slot_1.name,
     		type: "slot",
-    		source: "(48:2) <Button mode=\\\"outline\\\" on:click={displayDescription}>",
+    		source: "(55:2) <Button mode=\\\"outline\\\" on:click={displayDescription}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (51:2) <Button on:click={removeFromCart}>
+    // (58:2) <Button on:click={removeFromCart}>
     function create_default_slot$2(ctx) {
     	let t;
 
@@ -918,25 +918,30 @@ var app = (function () {
     		block,
     		id: create_default_slot$2.name,
     		type: "slot",
-    		source: "(51:2) <Button on:click={removeFromCart}>",
+    		source: "(58:2) <Button on:click={removeFromCart}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (52:2) {#if showDescription}
+    // (59:2) {#if showDescription}
     function create_if_block$1(ctx) {
     	let p;
+    	let t;
 
     	const block = {
     		c: function create() {
     			p = element("p");
-    			p.textContent = "Not available :(";
-    			add_location(p, file$3, 52, 4, 1024);
+    			t = text(/*description*/ ctx[3]);
+    			add_location(p, file$3, 59, 4, 1227);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
+    			append_dev(p, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*description*/ 8) set_data_dev(t, /*description*/ ctx[3]);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(p);
@@ -947,7 +952,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(52:2) {#if showDescription}",
+    		source: "(59:2) {#if showDescription}",
     		ctx
     	});
 
@@ -977,7 +982,7 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	button0.$on("click", /*displayDescription*/ ctx[3]);
+    	button0.$on("click", /*displayDescription*/ ctx[4]);
 
     	button1 = new Button({
     			props: {
@@ -987,7 +992,7 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	button1.$on("click", /*removeFromCart*/ ctx[4]);
+    	button1.$on("click", /*removeFromCart*/ ctx[5]);
     	let if_block = /*showDescription*/ ctx[2] && create_if_block$1(ctx);
 
     	const block = {
@@ -1005,11 +1010,11 @@ var app = (function () {
     			t5 = space();
     			if (if_block) if_block.c();
     			attr_dev(h1, "class", "svelte-1td7xux");
-    			add_location(h1, file$3, 45, 2, 766);
+    			add_location(h1, file$3, 52, 2, 969);
     			attr_dev(h2, "class", "svelte-1td7xux");
-    			add_location(h2, file$3, 46, 2, 785);
+    			add_location(h2, file$3, 53, 2, 988);
     			attr_dev(li, "class", "svelte-1td7xux");
-    			add_location(li, file$3, 44, 0, 759);
+    			add_location(li, file$3, 51, 0, 962);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1034,21 +1039,23 @@ var app = (function () {
     			if (!current || dirty & /*price*/ 2) set_data_dev(t2, /*price*/ ctx[1]);
     			const button0_changes = {};
 
-    			if (dirty & /*$$scope, showDescription*/ 68) {
+    			if (dirty & /*$$scope, showDescription*/ 260) {
     				button0_changes.$$scope = { dirty, ctx };
     			}
 
     			button0.$set(button0_changes);
     			const button1_changes = {};
 
-    			if (dirty & /*$$scope*/ 64) {
+    			if (dirty & /*$$scope*/ 256) {
     				button1_changes.$$scope = { dirty, ctx };
     			}
 
     			button1.$set(button1_changes);
 
     			if (/*showDescription*/ ctx[2]) {
-    				if (if_block) ; else {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
     					if_block = create_if_block$1(ctx);
     					if_block.c();
     					if_block.m(li, null);
@@ -1095,9 +1102,16 @@ var app = (function () {
     	let { price } = $$props;
     	let { id } = $$props;
     	let showDescription = false;
+    	let description = "Not available!";
+    	let fetchedProducts = [];
+
+    	products.subscribe(prods => {
+    		fetchedProducts = prods;
+    	});
 
     	function displayDescription() {
     		$$invalidate(2, showDescription = !showDescription);
+    		$$invalidate(3, description = fetchedProducts.find(p => p.id === id).description);
     	}
 
     	function removeFromCart() {
@@ -1131,7 +1145,7 @@ var app = (function () {
     	$$self.$$set = $$props => {
     		if ('title' in $$props) $$invalidate(0, title = $$props.title);
     		if ('price' in $$props) $$invalidate(1, price = $$props.price);
-    		if ('id' in $$props) $$invalidate(5, id = $$props.id);
+    		if ('id' in $$props) $$invalidate(6, id = $$props.id);
     	};
 
     	$$self.$capture_state = () => ({
@@ -1142,6 +1156,8 @@ var app = (function () {
     		price,
     		id,
     		showDescription,
+    		description,
+    		fetchedProducts,
     		displayDescription,
     		removeFromCart
     	});
@@ -1149,21 +1165,31 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ('title' in $$props) $$invalidate(0, title = $$props.title);
     		if ('price' in $$props) $$invalidate(1, price = $$props.price);
-    		if ('id' in $$props) $$invalidate(5, id = $$props.id);
+    		if ('id' in $$props) $$invalidate(6, id = $$props.id);
     		if ('showDescription' in $$props) $$invalidate(2, showDescription = $$props.showDescription);
+    		if ('description' in $$props) $$invalidate(3, description = $$props.description);
+    		if ('fetchedProducts' in $$props) fetchedProducts = $$props.fetchedProducts;
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [title, price, showDescription, displayDescription, removeFromCart, id];
+    	return [
+    		title,
+    		price,
+    		showDescription,
+    		description,
+    		displayDescription,
+    		removeFromCart,
+    		id
+    	];
     }
 
     class CartItem extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { title: 0, price: 1, id: 5 });
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { title: 0, price: 1, id: 6 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
