@@ -1,13 +1,21 @@
 <script>
+  import { onDestroy } from 'svelte';
   import cartItems from './cart-store.js';
   import CartItem from "./CartItem.svelte";
 
   let items;
   // Subscribe to the store with subscribe method (Is this like NG Observables or maybe services?)
-  cartItems.subscribe(its => {
+  let unsubscribe = cartItems.subscribe(its => {
     items = its;
     console.log('Items: ', items);
   });
+
+  // Always unsubscribe from subscriptions to prevent memory leaks
+  onDestroy(() => {
+    if(unsubscribe) {
+      unsubscribe();
+    }
+  })
 
   // export let items = [
   //   {
