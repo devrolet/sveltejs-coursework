@@ -1,7 +1,5 @@
 <script>
     export let type = "button";
-    // export let caption;
-
     export let href = null;
     export let mode = null;
     export let color = null;
@@ -76,8 +74,13 @@
     }
 
     .outline.success {
-        background: #01a129; 
+        color: #01a129; 
         border-color: #01a129; 
+    }
+
+    .outline-success:hover,
+    .outline-success:active {
+        background: #c2ffd1;
     }
 </style>
 {#if href}
