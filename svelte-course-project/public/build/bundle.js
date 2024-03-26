@@ -3269,7 +3269,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file = "src/App.svelte";
 
-    // (75:8) <Button on:click={() => (editMode = 'add')}>
+    // (77:8) <Button on:click={() => (editMode = 'add')}>
     function create_default_slot(ctx) {
     	let t;
 
@@ -3289,14 +3289,14 @@ var app = (function () {
     		block,
     		id: create_default_slot.name,
     		type: "slot",
-    		source: "(75:8) <Button on:click={() => (editMode = 'add')}>",
+    		source: "(77:8) <Button on:click={() => (editMode = 'add')}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (77:4) {#if editMode === 'add'}
+    // (79:4) {#if editMode === 'add'}
     function create_if_block(ctx) {
     	let editmeetup;
     	let current;
@@ -3331,7 +3331,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(77:4) {#if editMode === 'add'}",
+    		source: "(79:4) {#if editMode === 'add'}",
     		ctx
     	});
 
@@ -3380,9 +3380,9 @@ var app = (function () {
     			t2 = space();
     			create_component(meetupgrid.$$.fragment);
     			attr_dev(div, "class", "meetup-controls svelte-ll9dx3");
-    			add_location(div, file, 73, 4, 2336);
+    			add_location(div, file, 75, 4, 2372);
     			attr_dev(main, "class", "svelte-ll9dx3");
-    			add_location(main, file, 72, 0, 2325);
+    			add_location(main, file, 74, 0, 2361);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
