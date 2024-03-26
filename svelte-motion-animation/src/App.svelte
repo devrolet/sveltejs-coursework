@@ -67,7 +67,7 @@
             on:introend={() => console.log('Adding the element ends')}
             on:outrostart={() => console.log('Removing the element starts')}
             on:outroend={() => console.log('Removing the element ends')}
-            animate:flip
+            animate:flip={{duration: 300}}
         >
             {box}
         </div>

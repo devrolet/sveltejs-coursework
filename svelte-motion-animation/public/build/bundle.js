@@ -1801,7 +1801,7 @@ var app = (function () {
     		},
     		a: function animate() {
     			stop_animation();
-    			stop_animation = create_animation(div, rect, flip, {});
+    			stop_animation = create_animation(div, rect, flip, { duration: 300 });
     		},
     		i: function intro(local) {
     			if (current) return;
