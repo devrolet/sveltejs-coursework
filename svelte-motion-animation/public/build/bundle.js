@@ -1374,14 +1374,144 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
+    	child_ctx[8] = list[i];
     	return child_ctx;
     }
 
-    // (45:0) {#each boxes as box (box)}
+    // (46:0) {#if showParagraph}
+    function create_if_block_1(ctx) {
+    	let p;
+    	let p_transition;
+    	let current;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "Can you see me?";
+    			add_location(p, file, 46, 0, 1058);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    			current = true;
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			add_render_callback(() => {
+    				if (!current) return;
+    				if (!p_transition) p_transition = create_bidirectional_transition(p, fly, { x: 300 }, true);
+    				p_transition.run(1);
+    			});
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			if (!p_transition) p_transition = create_bidirectional_transition(p, fly, { x: 300 }, false);
+    			p_transition.run(0);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    			if (detaching && p_transition) p_transition.end();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(46:0) {#if showParagraph}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (54:0) {#if showParagraph}
+    function create_if_block(ctx) {
+    	let each_blocks = [];
+    	let each_1_lookup = new Map();
+    	let each_1_anchor;
+    	let current;
+    	let each_value = /*boxes*/ ctx[2];
+    	validate_each_argument(each_value);
+    	const get_key = ctx => /*box*/ ctx[8];
+    	validate_each_keys(ctx, each_value, get_each_context, get_key);
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		let child_ctx = get_each_context(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block(key, child_ctx));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(target, anchor);
+    				}
+    			}
+
+    			insert_dev(target, each_1_anchor, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*cubicIn, discard, boxes*/ 20) {
+    				each_value = /*boxes*/ ctx[2];
+    				validate_each_argument(each_value);
+    				group_outros();
+    				validate_each_keys(ctx, each_value, get_each_context, get_key);
+    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, each_1_anchor.parentNode, outro_and_destroy_block, create_each_block, each_1_anchor, get_each_context);
+    				check_outros();
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+
+    			for (let i = 0; i < each_value.length; i += 1) {
+    				transition_in(each_blocks[i]);
+    			}
+
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				transition_out(each_blocks[i]);
+    			}
+
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].d(detaching);
+    			}
+
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(54:0) {#if showParagraph}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (55:4) {#each boxes as box (box)}
     function create_each_block(key_1, ctx) {
     	let div;
-    	let t_value = /*box*/ ctx[6] + "";
+    	let t_value = /*box*/ ctx[8] + "";
     	let t;
     	let div_transition;
     	let current;
@@ -1395,7 +1525,7 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "svelte-4i8h4l");
-    			add_location(div, file, 49, 4, 1312);
+    			add_location(div, file, 59, 8, 1542);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
@@ -1408,7 +1538,7 @@ var app = (function () {
     					div,
     					"click",
     					function () {
-    						if (is_function(/*discard*/ ctx[3].bind(this, /*box*/ ctx[6]))) /*discard*/ ctx[3].bind(this, /*box*/ ctx[6]).apply(this, arguments);
+    						if (is_function(/*discard*/ ctx[4].bind(this, /*box*/ ctx[8]))) /*discard*/ ctx[4].bind(this, /*box*/ ctx[8]).apply(this, arguments);
     					},
     					false,
     					false,
@@ -1421,7 +1551,7 @@ var app = (function () {
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
-    			if ((!current || dirty & /*boxes*/ 2) && t_value !== (t_value = /*box*/ ctx[6] + "")) set_data_dev(t, t_value);
+    			if ((!current || dirty & /*boxes*/ 4) && t_value !== (t_value = /*box*/ ctx[8] + "")) set_data_dev(t, t_value);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -1451,7 +1581,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(45:0) {#each boxes as box (box)}",
+    		source: "(55:4) {#each boxes as box (box)}",
     		ctx
     	});
 
@@ -1459,108 +1589,144 @@ var app = (function () {
     }
 
     function create_fragment(ctx) {
-    	let input;
-    	let t0;
-    	let button;
+    	let button0;
+    	let t1;
     	let t2;
-    	let each_blocks = [];
-    	let each_1_lookup = new Map();
-    	let each_1_anchor;
+    	let hr;
+    	let t3;
+    	let input;
+    	let t4;
+    	let button1;
+    	let t6;
+    	let if_block1_anchor;
     	let current;
     	let mounted;
     	let dispose;
-    	let each_value = /*boxes*/ ctx[1];
-    	validate_each_argument(each_value);
-    	const get_key = ctx => /*box*/ ctx[6];
-    	validate_each_keys(ctx, each_value, get_each_context, get_key);
-
-    	for (let i = 0; i < each_value.length; i += 1) {
-    		let child_ctx = get_each_context(ctx, each_value, i);
-    		let key = get_key(child_ctx);
-    		each_1_lookup.set(key, each_blocks[i] = create_each_block(key, child_ctx));
-    	}
+    	let if_block0 = /*showParagraph*/ ctx[1] && create_if_block_1(ctx);
+    	let if_block1 = /*showParagraph*/ ctx[1] && create_if_block(ctx);
 
     	const block = {
     		c: function create() {
-    			input = element("input");
-    			t0 = space();
-    			button = element("button");
-    			button.textContent = "Add";
+    			button0 = element("button");
+    			button0.textContent = "Toggle";
+    			t1 = space();
+    			if (if_block0) if_block0.c();
     			t2 = space();
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
-    			each_1_anchor = empty();
+    			hr = element("hr");
+    			t3 = space();
+    			input = element("input");
+    			t4 = space();
+    			button1 = element("button");
+    			button1.textContent = "Add";
+    			t6 = space();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
+    			add_location(button0, file, 44, 0, 966);
+    			add_location(hr, file, 49, 0, 1114);
     			attr_dev(input, "type", "text");
-    			add_location(input, file, 42, 0, 934);
-    			add_location(button, file, 43, 0, 977);
+    			add_location(input, file, 51, 0, 1120);
+    			add_location(button1, file, 52, 0, 1163);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, input, anchor);
-    			/*input_binding*/ ctx[4](input);
-    			insert_dev(target, t0, anchor);
-    			insert_dev(target, button, anchor);
+    			insert_dev(target, button0, anchor);
+    			insert_dev(target, t1, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
     			insert_dev(target, t2, anchor);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				if (each_blocks[i]) {
-    					each_blocks[i].m(target, anchor);
-    				}
-    			}
-
-    			insert_dev(target, each_1_anchor, anchor);
+    			insert_dev(target, hr, anchor);
+    			insert_dev(target, t3, anchor);
+    			insert_dev(target, input, anchor);
+    			/*input_binding*/ ctx[6](input);
+    			insert_dev(target, t4, anchor);
+    			insert_dev(target, button1, anchor);
+    			insert_dev(target, t6, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert_dev(target, if_block1_anchor, anchor);
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*addBox*/ ctx[2], false, false, false, false);
+    				dispose = [
+    					listen_dev(button0, "click", /*click_handler*/ ctx[5], false, false, false, false),
+    					listen_dev(button1, "click", /*addBox*/ ctx[3], false, false, false, false)
+    				];
+
     				mounted = true;
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*cubicIn, discard, boxes*/ 10) {
-    				each_value = /*boxes*/ ctx[1];
-    				validate_each_argument(each_value);
+    			if (/*showParagraph*/ ctx[1]) {
+    				if (if_block0) {
+    					if (dirty & /*showParagraph*/ 2) {
+    						transition_in(if_block0, 1);
+    					}
+    				} else {
+    					if_block0 = create_if_block_1(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(t2.parentNode, t2);
+    				}
+    			} else if (if_block0) {
     				group_outros();
-    				validate_each_keys(ctx, each_value, get_each_context, get_key);
-    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, each_1_anchor.parentNode, outro_and_destroy_block, create_each_block, each_1_anchor, get_each_context);
+
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
+    				});
+
+    				check_outros();
+    			}
+
+    			if (/*showParagraph*/ ctx[1]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+
+    					if (dirty & /*showParagraph*/ 2) {
+    						transition_in(if_block1, 1);
+    					}
+    				} else {
+    					if_block1 = create_if_block(ctx);
+    					if_block1.c();
+    					transition_in(if_block1, 1);
+    					if_block1.m(if_block1_anchor.parentNode, if_block1_anchor);
+    				}
+    			} else if (if_block1) {
+    				group_outros();
+
+    				transition_out(if_block1, 1, 1, () => {
+    					if_block1 = null;
+    				});
+
     				check_outros();
     			}
     		},
     		i: function intro(local) {
     			if (current) return;
-
-    			for (let i = 0; i < each_value.length; i += 1) {
-    				transition_in(each_blocks[i]);
-    			}
-
+    			transition_in(if_block0);
+    			transition_in(if_block1);
     			current = true;
     		},
     		o: function outro(local) {
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				transition_out(each_blocks[i]);
-    			}
-
+    			transition_out(if_block0);
+    			transition_out(if_block1);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(input);
-    			/*input_binding*/ ctx[4](null);
-    			if (detaching) detach_dev(t0);
-    			if (detaching) detach_dev(button);
+    			if (detaching) detach_dev(button0);
+    			if (detaching) detach_dev(t1);
+    			if (if_block0) if_block0.d(detaching);
     			if (detaching) detach_dev(t2);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].d(detaching);
-    			}
-
-    			if (detaching) detach_dev(each_1_anchor);
+    			if (detaching) detach_dev(hr);
+    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(input);
+    			/*input_binding*/ ctx[6](null);
+    			if (detaching) detach_dev(t4);
+    			if (detaching) detach_dev(button1);
+    			if (detaching) detach_dev(t6);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach_dev(if_block1_anchor);
     			mounted = false;
-    			dispose();
+    			run_all(dispose);
     		}
     	};
 
@@ -1579,6 +1745,7 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('App', slots, []);
     	let boxInput;
+    	let showParagraph = false;
     	const progress = tweened(0, { delay: 0, duration: 700, easing: cubicIn });
 
     	setTimeout(
@@ -1591,11 +1758,11 @@ var app = (function () {
     	let boxes = [];
 
     	let addBox = () => {
-    		$$invalidate(1, boxes = [...boxes, boxInput.value]);
+    		$$invalidate(2, boxes = [...boxes, boxInput.value]);
     	};
 
     	let discard = value => {
-    		$$invalidate(1, boxes = boxes.filter(el => el !== value));
+    		$$invalidate(2, boxes = boxes.filter(el => el !== value));
     	};
 
     	const writable_props = [];
@@ -1603,6 +1770,8 @@ var app = (function () {
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<App> was created with unknown prop '${key}'`);
     	});
+
+    	const click_handler = () => $$invalidate(1, showParagraph = !showParagraph);
 
     	function input_binding($$value) {
     		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
@@ -1621,6 +1790,7 @@ var app = (function () {
     		scale,
     		Spring,
     		boxInput,
+    		showParagraph,
     		progress,
     		boxes,
     		addBox,
@@ -1629,16 +1799,17 @@ var app = (function () {
 
     	$$self.$inject_state = $$props => {
     		if ('boxInput' in $$props) $$invalidate(0, boxInput = $$props.boxInput);
-    		if ('boxes' in $$props) $$invalidate(1, boxes = $$props.boxes);
-    		if ('addBox' in $$props) $$invalidate(2, addBox = $$props.addBox);
-    		if ('discard' in $$props) $$invalidate(3, discard = $$props.discard);
+    		if ('showParagraph' in $$props) $$invalidate(1, showParagraph = $$props.showParagraph);
+    		if ('boxes' in $$props) $$invalidate(2, boxes = $$props.boxes);
+    		if ('addBox' in $$props) $$invalidate(3, addBox = $$props.addBox);
+    		if ('discard' in $$props) $$invalidate(4, discard = $$props.discard);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [boxInput, boxes, addBox, discard, input_binding];
+    	return [boxInput, showParagraph, boxes, addBox, discard, click_handler, input_binding];
     }
 
     class App extends SvelteComponentDev {

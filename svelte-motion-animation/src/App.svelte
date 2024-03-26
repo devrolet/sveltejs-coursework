@@ -7,6 +7,7 @@
     import Spring from './Spring.svelte';
 
     let boxInput;
+    let showParagraph = false;
 
     const progress = tweened(0, {
         delay: 0,
@@ -40,14 +41,23 @@
 </style>
 <!-- <progress value={$progress}></progress> -->
 <!-- <Spring /> -->
+
+<button on:click={() => showParagraph = !showParagraph}>Toggle</button>
+{#if showParagraph}
+<p transition:fly={{x: 300}}>Can you see me?</p>
+{/if}
+
+<hr>
+
 <input type="text" bind:this={boxInput} />
 <button on:click={addBox}>Add</button>
-{#each boxes as box (box)}
-<!-- fade, slide, and scale work out the box, fly needs more params, others can use params as well easing can be added too -->
-<!-- All transitions have delay, duration, and easing -->
-<!-- Scale has easing, start, and opacity -->
-<!-- Fly has x: and y: offset -->
-    <div transition:fly={{ easing: cubicIn, x: 0, y: 300 }} on:click={discard.bind(this, box)} >{box}</div>
-{/each}
-
+{#if showParagraph}
+    {#each boxes as box (box)}
+    <!-- fade, slide, and scale work out the box, fly needs more params, others can use params as well easing can be added too -->
+    <!-- All transitions have delay, duration, and easing -->
+    <!-- Scale has easing, start, and opacity -->
+    <!-- Fly has x: and y: offset -->
+        <div transition:fly={{ easing: cubicIn, x: 0, y: 300 }} on:click={discard.bind(this, box)} >{box}</div>
+    {/each}
+{/if}
 
