@@ -2,6 +2,7 @@
     import { writable } from 'svelte/store';
     import { tweened } from 'svelte/motion';
     import { cubicIn } from 'svelte/easing';
+    import { fade, fly, slide, scale } from 'svelte/transition'
 
     import Spring from './Spring.svelte';
 
@@ -21,6 +22,10 @@
     let addBox = () => {
         boxes = [...boxes, boxInput.value];
     }
+
+    let discard = (value) => {
+        boxes = boxes.filter(el => el !== value);
+    }
 </script>
 <style>
     div {
@@ -38,7 +43,11 @@
 <input type="text" bind:this={boxInput} />
 <button on:click={addBox}>Add</button>
 {#each boxes as box (box)}
-    <div>{box}</div>
+<!-- fade, slide, and scale work out the box, fly needs more params, others can use params as well easing can be added too -->
+<!-- All transitions have delay, duration, and easing -->
+<!-- Scale has easing, start, and opacity -->
+<!-- Fly has x: and y: offset -->
+    <div transition:fly={{ easing: cubicIn, x: 0, y: 300 }} on:click={discard.bind(this, box)} >{box}</div>
 {/each}
 
 
