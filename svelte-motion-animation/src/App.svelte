@@ -58,7 +58,17 @@
     <!-- Scale has easing, start, and opacity -->
     <!-- Fly has x: and y: offset -->
     <!-- local means the one individual entry and not the whole list -->
-        <div transition:fly|local={{ easing: cubicIn, x: 0, y: 300 }} on:click={discard.bind(this, box)} >{box}</div>
+        <div 
+            transition:fly|local={{ easing: cubicIn, x: 0, y: 300 }} 
+            on:click={discard.bind(this, box)}
+            on:introstart={() => console.log('Adding the element starts')}
+            on:introend={() => console.log('Adding the element ends')}
+            on:outrostart={() => console.log('Removing the element starts')}
+            on:outroend={() => console.log('Removing the element ends')}
+
+        >
+            {box}
+        </div>
     {/each}
 {/if}
 
