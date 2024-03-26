@@ -9,15 +9,20 @@
     let loadedMeetups = meetups
 
     let editMode;
+    let editedId;
     let page = 'overview';
     let pageData = {};
 
-    const addMeetup = (event) => {
+    const savedMeetup = (event) => {
         editMode = null;
+        editedId = null;
         console.log('Meetup Added Successfully');
     }
 
-    let cancelEdit = () => editMode = null;
+    let cancelEdit = () => {
+        editMode = null;
+        editedId = null;
+    }
 
     let showDetails = (event) => {
         page = 'details';
@@ -29,6 +34,12 @@
         pageData = {};
         console.log('closed')
     }
+
+    let startEdit = (event) => {
+        editMode = 'edit';
+        editedId = event.detail;
+    }
+
 </script>
 <style>
     main {
@@ -45,12 +56,16 @@
 <main>
     {#if page === 'overview'}
         <div class="meetup-controls">
-            <Button on:click={() => (editMode = 'add')}>New Meetup</Button>
+            <Button on:click={() => (editMode = 'edit')}>New Meetup</Button>
         </div>
-        {#if editMode === 'add'}
-            <EditMeetup on:save="{addMeetup}" on:cancel={cancelEdit} />
+        {#if editMode === 'edit'}
+            <EditMeetup id={editedId} on:save="{savedMeetup}" on:cancel={cancelEdit} />
         {/if}
-        <MeetupGrid meetups={$meetups} on:showdetails={showDetails} />
+        <MeetupGrid 
+            meetups={$meetups} 
+            on:showdetails={showDetails} 
+            on:edit={startEdit} 
+        />
     {:else}
         <MeetupDetail id={pageData.id} on:close={closeDetails} />
     {/if}

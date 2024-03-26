@@ -62,7 +62,7 @@
 
     .outline:hover,
     .outline:active {
-        background: #ffc7de;
+        background: #c2ffd1;
         box-shadow: none;
     }
 
@@ -80,7 +80,7 @@
 
     .outline-success:hover,
     .outline-success:active {
-        background: #c2ffd1;
+        background: #ffc7de;
     }
 </style>
 {#if href}
