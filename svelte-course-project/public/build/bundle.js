@@ -177,12 +177,6 @@ var app = (function () {
             node.parentNode.removeChild(node);
         }
     }
-    function destroy_each(iterations, detaching) {
-        for (let i = 0; i < iterations.length; i += 1) {
-            if (iterations[i])
-                iterations[i].d(detaching);
-        }
-    }
     function element(name) {
         return document.createElement(name);
     }
@@ -287,6 +281,75 @@ var app = (function () {
             });
             managed_styles.clear();
         });
+    }
+
+    function create_animation(node, from, fn, params) {
+        if (!from)
+            return noop;
+        const to = node.getBoundingClientRect();
+        if (from.left === to.left && from.right === to.right && from.top === to.top && from.bottom === to.bottom)
+            return noop;
+        const { delay = 0, duration = 300, easing = identity, 
+        // @ts-ignore todo: should this be separated from destructuring? Or start/end added to public api and documentation?
+        start: start_time = now() + delay, 
+        // @ts-ignore todo:
+        end = start_time + duration, tick = noop, css } = fn(node, { from, to }, params);
+        let running = true;
+        let started = false;
+        let name;
+        function start() {
+            if (css) {
+                name = create_rule(node, 0, 1, duration, delay, easing, css);
+            }
+            if (!delay) {
+                started = true;
+            }
+        }
+        function stop() {
+            if (css)
+                delete_rule(node, name);
+            running = false;
+        }
+        loop(now => {
+            if (!started && now >= start_time) {
+                started = true;
+            }
+            if (started && now >= end) {
+                tick(1, 0);
+                stop();
+            }
+            if (!running) {
+                return false;
+            }
+            if (started) {
+                const p = now - start_time;
+                const t = 0 + 1 * easing(p / duration);
+                tick(t, 1 - t);
+            }
+            return true;
+        });
+        start();
+        tick(0, 1);
+        return stop;
+    }
+    function fix_position(node) {
+        const style = getComputedStyle(node);
+        if (style.position !== 'absolute' && style.position !== 'fixed') {
+            const { width, height } = style;
+            const a = node.getBoundingClientRect();
+            node.style.position = 'absolute';
+            node.style.width = width;
+            node.style.height = height;
+            add_transform(node, a);
+        }
+    }
+    function add_transform(node, a) {
+        const b = node.getBoundingClientRect();
+        if (a.left !== b.left || a.top !== b.top) {
+            const style = getComputedStyle(node);
+            const transform = style.transform === 'none' ? '' : style.transform;
+            node.style.transform = `${transform} translate(${a.left - b.left}px, ${a.top - b.top}px)`;
+        }
     }
 
     let current_component;
@@ -613,6 +676,103 @@ var app = (function () {
                 running_program = pending_program = null;
             }
         };
+    }
+    function outro_and_destroy_block(block, lookup) {
+        transition_out(block, 1, 1, () => {
+            lookup.delete(block.key);
+        });
+    }
+    function fix_and_outro_and_destroy_block(block, lookup) {
+        block.f();
+        outro_and_destroy_block(block, lookup);
+    }
+    function update_keyed_each(old_blocks, dirty, get_key, dynamic, ctx, list, lookup, node, destroy, create_each_block, next, get_context) {
+        let o = old_blocks.length;
+        let n = list.length;
+        let i = o;
+        const old_indexes = {};
+        while (i--)
+            old_indexes[old_blocks[i].key] = i;
+        const new_blocks = [];
+        const new_lookup = new Map();
+        const deltas = new Map();
+        const updates = [];
+        i = n;
+        while (i--) {
+            const child_ctx = get_context(ctx, list, i);
+            const key = get_key(child_ctx);
+            let block = lookup.get(key);
+            if (!block) {
+                block = create_each_block(key, child_ctx);
+                block.c();
+            }
+            else if (dynamic) {
+                // defer updates until all the DOM shuffling is done
+                updates.push(() => block.p(child_ctx, dirty));
+            }
+            new_lookup.set(key, new_blocks[i] = block);
+            if (key in old_indexes)
+                deltas.set(key, Math.abs(i - old_indexes[key]));
+        }
+        const will_move = new Set();
+        const did_move = new Set();
+        function insert(block) {
+            transition_in(block, 1);
+            block.m(node, next);
+            lookup.set(block.key, block);
+            next = block.first;
+            n--;
+        }
+        while (o && n) {
+            const new_block = new_blocks[n - 1];
+            const old_block = old_blocks[o - 1];
+            const new_key = new_block.key;
+            const old_key = old_block.key;
+            if (new_block === old_block) {
+                // do nothing
+                next = new_block.first;
+                o--;
+                n--;
+            }
+            else if (!new_lookup.has(old_key)) {
+                // remove old block
+                destroy(old_block, lookup);
+                o--;
+            }
+            else if (!lookup.has(new_key) || will_move.has(new_key)) {
+                insert(new_block);
+            }
+            else if (did_move.has(old_key)) {
+                o--;
+            }
+            else if (deltas.get(new_key) > deltas.get(old_key)) {
+                did_move.add(new_key);
+                insert(new_block);
+            }
+            else {
+                will_move.add(old_key);
+                o--;
+            }
+        }
+        while (o--) {
+            const old_block = old_blocks[o];
+            if (!new_lookup.has(old_block.key))
+                destroy(old_block, lookup);
+        }
+        while (n)
+            insert(new_blocks[n - 1]);
+        run_all(updates);
+        return new_blocks;
+    }
+    function validate_each_keys(ctx, list, get_context, get_key) {
+        const keys = new Set();
+        for (let i = 0; i < list.length; i++) {
+            const key = get_key(get_context(ctx, list, i));
+            if (keys.has(key)) {
+                throw new Error('Cannot have duplicate keys in a keyed each');
+            }
+            keys.add(key);
+        }
     }
     function create_component(block) {
         block && block.c();
@@ -1012,6 +1172,74 @@ var app = (function () {
     			id: create_fragment$a.name
     		});
     	}
+    }
+
+    function cubicOut(t) {
+        const f = t - 1.0;
+        return f * f * f + 1.0;
+    }
+
+    function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
+        const o = +getComputedStyle(node).opacity;
+        return {
+            delay,
+            duration,
+            easing,
+            css: t => `opacity: ${t * o}`
+        };
+    }
+    function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 } = {}) {
+        const style = getComputedStyle(node);
+        const target_opacity = +style.opacity;
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const od = target_opacity * (1 - opacity);
+        const [xValue, xUnit] = split_css_unit(x);
+        const [yValue, yUnit] = split_css_unit(y);
+        return {
+            delay,
+            duration,
+            easing,
+            css: (t, u) => `
+			transform: ${transform} translate(${(1 - t) * xValue}${xUnit}, ${(1 - t) * yValue}${yUnit});
+			opacity: ${target_opacity - (od * u)}`
+        };
+    }
+    function scale(node, { delay = 0, duration = 400, easing = cubicOut, start = 0, opacity = 0 } = {}) {
+        const style = getComputedStyle(node);
+        const target_opacity = +style.opacity;
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const sd = 1 - start;
+        const od = target_opacity * (1 - opacity);
+        return {
+            delay,
+            duration,
+            easing,
+            css: (_t, u) => `
+			transform: ${transform} scale(${1 - (sd * u)});
+			opacity: ${target_opacity - (od * u)}
+		`
+        };
+    }
+
+    function flip(node, { from, to }, params = {}) {
+        const style = getComputedStyle(node);
+        const transform = style.transform === 'none' ? '' : style.transform;
+        const [ox, oy] = style.transformOrigin.split(' ').map(parseFloat);
+        const dx = (from.left + from.width * ox / to.width) - (to.left + ox);
+        const dy = (from.top + from.height * oy / to.height) - (to.top + oy);
+        const { delay = 0, duration = (d) => Math.sqrt(d) * 120, easing = cubicOut } = params;
+        return {
+            delay,
+            duration: is_function(duration) ? duration(Math.sqrt(dx * dx + dy * dy)) : duration,
+            easing,
+            css: (t, u) => {
+                const x = u * dx;
+                const y = u * dy;
+                const sx = t + u * from.width / to.width;
+                const sy = t + u * from.height / to.height;
+                return `transform: ${transform} translate(${x}px, ${y}px) scale(${sx}, ${sy});`;
+            }
+        };
     }
 
     /* src/UI/Button.svelte generated by Svelte v3.59.2 */
@@ -1475,7 +1703,7 @@ var app = (function () {
 
     	badge = new Badge({
     			props: {
-    				$$slots: { default: [create_default_slot_3$1] },
+    				$$slots: { default: [create_default_slot_4] },
     				$$scope: { ctx }
     			},
     			$$inline: true
@@ -1515,7 +1743,7 @@ var app = (function () {
     }
 
     // (81:16) <Badge>
-    function create_default_slot_3$1(ctx) {
+    function create_default_slot_4(ctx) {
     	let t;
 
     	const block = {
@@ -1532,9 +1760,36 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_default_slot_3$1.name,
+    		id: create_default_slot_4.name,
     		type: "slot",
     		source: "(81:16) <Badge>",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (94:8) <Button href="mailto:{email}">
+    function create_default_slot_3$1(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text("Contact");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_default_slot_3$1.name,
+    		type: "slot",
+    		source: "(94:8) <Button href=\\\"mailto:{email}\\\">",
     		ctx
     	});
 
@@ -1570,7 +1825,7 @@ var app = (function () {
 
     // (96:8) <Button              mode="outline"              color={isFav ? null : 'success'}             type="button"               on:click={toggleFavorite}         >
     function create_default_slot_1$2(ctx) {
-    	let t_value = (/*isFav*/ ctx[6] ? 'Unfavorite' : 'Favorite') + "";
+    	let t_value = (/*isFav*/ ctx[7] ? 'Unfavorite' : 'Favorite') + "";
     	let t;
 
     	const block = {
@@ -1581,7 +1836,7 @@ var app = (function () {
     			insert_dev(target, t, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*isFav*/ 64 && t_value !== (t_value = (/*isFav*/ ctx[6] ? 'Unfavorite' : 'Favorite') + "")) set_data_dev(t, t_value);
+    			if (dirty & /*isFav*/ 128 && t_value !== (t_value = (/*isFav*/ ctx[7] ? 'Unfavorite' : 'Favorite') + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(t);
@@ -1653,10 +1908,21 @@ var app = (function () {
     	let button1;
     	let t11;
     	let button2;
+    	let t12;
+    	let button3;
     	let current;
-    	let if_block = /*isFav*/ ctx[6] && create_if_block$3(ctx);
+    	let if_block = /*isFav*/ ctx[7] && create_if_block$3(ctx);
 
     	button0 = new Button({
+    			props: {
+    				href: "mailto:" + /*email*/ ctx[6],
+    				$$slots: { default: [create_default_slot_3$1] },
+    				$$scope: { ctx }
+    			},
+    			$$inline: true
+    		});
+
+    	button1 = new Button({
     			props: {
     				mode: "outline",
     				type: "button",
@@ -1666,12 +1932,12 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	button0.$on("click", /*click_handler*/ ctx[9]);
+    	button1.$on("click", /*click_handler*/ ctx[10]);
 
-    	button1 = new Button({
+    	button2 = new Button({
     			props: {
     				mode: "outline",
-    				color: /*isFav*/ ctx[6] ? null : 'success',
+    				color: /*isFav*/ ctx[7] ? null : 'success',
     				type: "button",
     				$$slots: { default: [create_default_slot_1$2] },
     				$$scope: { ctx }
@@ -1679,9 +1945,9 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	button1.$on("click", /*toggleFavorite*/ ctx[8]);
+    	button2.$on("click", /*toggleFavorite*/ ctx[9]);
 
-    	button2 = new Button({
+    	button3 = new Button({
     			props: {
     				type: "button",
     				$$slots: { default: [create_default_slot$4] },
@@ -1690,7 +1956,7 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	button2.$on("click", /*click_handler_1*/ ctx[10]);
+    	button3.$on("click", /*click_handler_1*/ ctx[11]);
 
     	const block = {
     		c: function create() {
@@ -1720,28 +1986,30 @@ var app = (function () {
     			create_component(button1.$$.fragment);
     			t11 = space();
     			create_component(button2.$$.fragment);
+    			t12 = space();
+    			create_component(button3.$$.fragment);
     			attr_dev(h1, "class", "svelte-11gziwq");
-    			add_location(h1, file$7, 77, 8, 1431);
+    			add_location(h1, file$7, 77, 8, 1428);
     			attr_dev(h2, "class", "svelte-11gziwq");
-    			add_location(h2, file$7, 83, 8, 1561);
+    			add_location(h2, file$7, 83, 8, 1558);
     			attr_dev(p0, "class", "svelte-11gziwq");
-    			add_location(p0, file$7, 84, 8, 1589);
+    			add_location(p0, file$7, 84, 8, 1586);
     			attr_dev(header, "class", "svelte-11gziwq");
-    			add_location(header, file$7, 76, 4, 1414);
+    			add_location(header, file$7, 76, 4, 1411);
     			if (!src_url_equal(img.src, img_src_value = /*imageUrl*/ ctx[3])) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", /*title*/ ctx[1]);
     			attr_dev(img, "class", "svelte-11gziwq");
-    			add_location(img, file$7, 87, 8, 1652);
+    			add_location(img, file$7, 87, 8, 1649);
     			attr_dev(div0, "class", "image svelte-11gziwq");
-    			add_location(div0, file$7, 86, 4, 1624);
+    			add_location(div0, file$7, 86, 4, 1621);
     			attr_dev(p1, "class", "svelte-11gziwq");
-    			add_location(p1, file$7, 90, 8, 1734);
+    			add_location(p1, file$7, 90, 8, 1731);
     			attr_dev(div1, "class", "content svelte-11gziwq");
-    			add_location(div1, file$7, 89, 4, 1704);
+    			add_location(div1, file$7, 89, 4, 1701);
     			attr_dev(footer, "class", "svelte-11gziwq");
-    			add_location(footer, file$7, 92, 4, 1770);
+    			add_location(footer, file$7, 92, 4, 1767);
     			attr_dev(article, "class", "svelte-11gziwq");
-    			add_location(article, file$7, 75, 0, 1400);
+    			add_location(article, file$7, 75, 0, 1397);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1773,14 +2041,16 @@ var app = (function () {
     			mount_component(button1, footer, null);
     			append_dev(footer, t11);
     			mount_component(button2, footer, null);
+    			append_dev(footer, t12);
+    			mount_component(button3, footer, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
     			if (!current || dirty & /*title*/ 2) set_data_dev(t0, /*title*/ ctx[1]);
 
-    			if (/*isFav*/ ctx[6]) {
+    			if (/*isFav*/ ctx[7]) {
     				if (if_block) {
-    					if (dirty & /*isFav*/ 64) {
+    					if (dirty & /*isFav*/ 128) {
     						transition_in(if_block, 1);
     					}
     				} else {
@@ -1812,27 +2082,35 @@ var app = (function () {
 
     			if (!current || dirty & /*description*/ 16) set_data_dev(t8, /*description*/ ctx[4]);
     			const button0_changes = {};
+    			if (dirty & /*email*/ 64) button0_changes.href = "mailto:" + /*email*/ ctx[6];
 
-    			if (dirty & /*$$scope*/ 2048) {
+    			if (dirty & /*$$scope*/ 4096) {
     				button0_changes.$$scope = { dirty, ctx };
     			}
 
     			button0.$set(button0_changes);
     			const button1_changes = {};
-    			if (dirty & /*isFav*/ 64) button1_changes.color = /*isFav*/ ctx[6] ? null : 'success';
 
-    			if (dirty & /*$$scope, isFav*/ 2112) {
+    			if (dirty & /*$$scope*/ 4096) {
     				button1_changes.$$scope = { dirty, ctx };
     			}
 
     			button1.$set(button1_changes);
     			const button2_changes = {};
+    			if (dirty & /*isFav*/ 128) button2_changes.color = /*isFav*/ ctx[7] ? null : 'success';
 
-    			if (dirty & /*$$scope*/ 2048) {
+    			if (dirty & /*$$scope, isFav*/ 4224) {
     				button2_changes.$$scope = { dirty, ctx };
     			}
 
     			button2.$set(button2_changes);
+    			const button3_changes = {};
+
+    			if (dirty & /*$$scope*/ 4096) {
+    				button3_changes.$$scope = { dirty, ctx };
+    			}
+
+    			button3.$set(button3_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -1840,6 +2118,7 @@ var app = (function () {
     			transition_in(button0.$$.fragment, local);
     			transition_in(button1.$$.fragment, local);
     			transition_in(button2.$$.fragment, local);
+    			transition_in(button3.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
@@ -1847,6 +2126,7 @@ var app = (function () {
     			transition_out(button0.$$.fragment, local);
     			transition_out(button1.$$.fragment, local);
     			transition_out(button2.$$.fragment, local);
+    			transition_out(button3.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
@@ -1855,6 +2135,7 @@ var app = (function () {
     			destroy_component(button0);
     			destroy_component(button1);
     			destroy_component(button2);
+    			destroy_component(button3);
     		}
     	};
 
@@ -1878,6 +2159,7 @@ var app = (function () {
     	let { imageUrl } = $$props;
     	let { description } = $$props;
     	let { address } = $$props;
+    	let { email } = $$props;
     	let { isFav } = $$props;
     	const dispatch = createEventDispatcher();
 
@@ -1910,12 +2192,25 @@ var app = (function () {
     			console.warn("<MeetupItem> was created without expected prop 'address'");
     		}
 
+    		if (email === undefined && !('email' in $$props || $$self.$$.bound[$$self.$$.props['email']])) {
+    			console.warn("<MeetupItem> was created without expected prop 'email'");
+    		}
+
     		if (isFav === undefined && !('isFav' in $$props || $$self.$$.bound[$$self.$$.props['isFav']])) {
     			console.warn("<MeetupItem> was created without expected prop 'isFav'");
     		}
     	});
 
-    	const writable_props = ['id', 'title', 'subtitle', 'imageUrl', 'description', 'address', 'isFav'];
+    	const writable_props = [
+    		'id',
+    		'title',
+    		'subtitle',
+    		'imageUrl',
+    		'description',
+    		'address',
+    		'email',
+    		'isFav'
+    	];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<MeetupItem> was created with unknown prop '${key}'`);
@@ -1931,7 +2226,8 @@ var app = (function () {
     		if ('imageUrl' in $$props) $$invalidate(3, imageUrl = $$props.imageUrl);
     		if ('description' in $$props) $$invalidate(4, description = $$props.description);
     		if ('address' in $$props) $$invalidate(5, address = $$props.address);
-    		if ('isFav' in $$props) $$invalidate(6, isFav = $$props.isFav);
+    		if ('email' in $$props) $$invalidate(6, email = $$props.email);
+    		if ('isFav' in $$props) $$invalidate(7, isFav = $$props.isFav);
     	};
 
     	$$self.$capture_state = () => ({
@@ -1945,6 +2241,7 @@ var app = (function () {
     		imageUrl,
     		description,
     		address,
+    		email,
     		isFav,
     		dispatch,
     		toggleFavorite
@@ -1957,8 +2254,9 @@ var app = (function () {
     		if ('imageUrl' in $$props) $$invalidate(3, imageUrl = $$props.imageUrl);
     		if ('description' in $$props) $$invalidate(4, description = $$props.description);
     		if ('address' in $$props) $$invalidate(5, address = $$props.address);
-    		if ('isFav' in $$props) $$invalidate(6, isFav = $$props.isFav);
-    		if ('toggleFavorite' in $$props) $$invalidate(8, toggleFavorite = $$props.toggleFavorite);
+    		if ('email' in $$props) $$invalidate(6, email = $$props.email);
+    		if ('isFav' in $$props) $$invalidate(7, isFav = $$props.isFav);
+    		if ('toggleFavorite' in $$props) $$invalidate(9, toggleFavorite = $$props.toggleFavorite);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1972,6 +2270,7 @@ var app = (function () {
     		imageUrl,
     		description,
     		address,
+    		email,
     		isFav,
     		dispatch,
     		toggleFavorite,
@@ -1991,7 +2290,8 @@ var app = (function () {
     			imageUrl: 3,
     			description: 4,
     			address: 5,
-    			isFav: 6
+    			email: 6,
+    			isFav: 7
     		});
 
     		dispatch_dev("SvelteRegisterComponent", {
@@ -2047,6 +2347,14 @@ var app = (function () {
     	}
 
     	set address(value) {
+    		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get email() {
+    		throw new Error("<MeetupItem>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set email(value) {
     		throw new Error("<MeetupItem>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
@@ -2197,7 +2505,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (42:4) <Button on:click={() => dispatch('add')}>
+    // (44:4) <Button on:click={() => dispatch('add')}>
     function create_default_slot$3(ctx) {
     	let t;
 
@@ -2217,16 +2525,21 @@ var app = (function () {
     		block,
     		id: create_default_slot$3.name,
     		type: "slot",
-    		source: "(42:4) <Button on:click={() => dispatch('add')}>",
+    		source: "(44:4) <Button on:click={() => dispatch('add')}>",
     		ctx
     	});
 
     	return block;
     }
 
-    // (45:4) {#each filteredMeetups as meetup}
-    function create_each_block(ctx) {
+    // (47:4) {#each filteredMeetups as meetup (meetup.id)}
+    function create_each_block(key_1, ctx) {
+    	let div;
     	let meetupitem;
+    	let t;
+    	let div_transition;
+    	let rect;
+    	let stop_animation = noop;
     	let current;
 
     	meetupitem = new MeetupItem({
@@ -2247,14 +2560,23 @@ var app = (function () {
     	meetupitem.$on("edit", /*edit_handler*/ ctx[7]);
 
     	const block = {
+    		key: key_1,
+    		first: null,
     		c: function create() {
+    			div = element("div");
     			create_component(meetupitem.$$.fragment);
+    			t = space();
+    			add_location(div, file$5, 47, 8, 1181);
+    			this.first = div;
     		},
     		m: function mount(target, anchor) {
-    			mount_component(meetupitem, target, anchor);
+    			insert_dev(target, div, anchor);
+    			mount_component(meetupitem, div, null);
+    			append_dev(div, t);
     			current = true;
     		},
-    		p: function update(ctx, dirty) {
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
     			const meetupitem_changes = {};
     			if (dirty & /*filteredMeetups*/ 1) meetupitem_changes.id = /*meetup*/ ctx[8].id;
     			if (dirty & /*filteredMeetups*/ 1) meetupitem_changes.title = /*meetup*/ ctx[8].title;
@@ -2266,17 +2588,40 @@ var app = (function () {
     			if (dirty & /*filteredMeetups*/ 1) meetupitem_changes.isFav = /*meetup*/ ctx[8].isFavorite;
     			meetupitem.$set(meetupitem_changes);
     		},
+    		r: function measure() {
+    			rect = div.getBoundingClientRect();
+    		},
+    		f: function fix() {
+    			fix_position(div);
+    			stop_animation();
+    			add_transform(div, rect);
+    		},
+    		a: function animate() {
+    			stop_animation();
+    			stop_animation = create_animation(div, rect, flip, { duration: 300 });
+    		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(meetupitem.$$.fragment, local);
+
+    			add_render_callback(() => {
+    				if (!current) return;
+    				if (!div_transition) div_transition = create_bidirectional_transition(div, scale, {}, true);
+    				div_transition.run(1);
+    			});
+
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(meetupitem.$$.fragment, local);
+    			if (!div_transition) div_transition = create_bidirectional_transition(div, scale, {}, false);
+    			div_transition.run(0);
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			destroy_component(meetupitem, detaching);
+    			if (detaching) detach_dev(div);
+    			destroy_component(meetupitem);
+    			if (detaching && div_transition) div_transition.end();
     		}
     	};
 
@@ -2284,7 +2629,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(45:4) {#each filteredMeetups as meetup}",
+    		source: "(47:4) {#each filteredMeetups as meetup (meetup.id)}",
     		ctx
     	});
 
@@ -2298,6 +2643,8 @@ var app = (function () {
     	let button;
     	let t1;
     	let section1;
+    	let each_blocks = [];
+    	let each_1_lookup = new Map();
     	let current;
     	meetupfilter = new MeetupFilter({ $$inline: true });
     	meetupfilter.$on("select", /*setFilter*/ ctx[2]);
@@ -2313,15 +2660,14 @@ var app = (function () {
     	button.$on("click", /*click_handler*/ ctx[5]);
     	let each_value = /*filteredMeetups*/ ctx[0];
     	validate_each_argument(each_value);
-    	let each_blocks = [];
+    	const get_key = ctx => /*meetup*/ ctx[8].id;
+    	validate_each_keys(ctx, each_value, get_each_context, get_key);
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    		let child_ctx = get_each_context(ctx, each_value, i);
+    		let key = get_key(child_ctx);
+    		each_1_lookup.set(key, each_blocks[i] = create_each_block(key, child_ctx));
     	}
-
-    	const out = i => transition_out(each_blocks[i], 1, 1, () => {
-    		each_blocks[i] = null;
-    	});
 
     	const block = {
     		c: function create() {
@@ -2338,10 +2684,10 @@ var app = (function () {
 
     			attr_dev(section0, "id", "meetup-controls");
     			attr_dev(section0, "class", "svelte-15z7opt");
-    			add_location(section0, file$5, 39, 0, 857);
+    			add_location(section0, file$5, 41, 0, 947);
     			attr_dev(section1, "id", "meetups");
     			attr_dev(section1, "class", "svelte-15z7opt");
-    			add_location(section1, file$5, 43, 0, 1010);
+    			add_location(section1, file$5, 45, 0, 1100);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2374,28 +2720,11 @@ var app = (function () {
     			if (dirty & /*filteredMeetups*/ 1) {
     				each_value = /*filteredMeetups*/ ctx[0];
     				validate_each_argument(each_value);
-    				let i;
-
-    				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context(ctx, each_value, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    						transition_in(each_blocks[i], 1);
-    					} else {
-    						each_blocks[i] = create_each_block(child_ctx);
-    						each_blocks[i].c();
-    						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(section1, null);
-    					}
-    				}
-
     				group_outros();
-
-    				for (i = each_value.length; i < each_blocks.length; i += 1) {
-    					out(i);
-    				}
-
+    				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].r();
+    				validate_each_keys(ctx, each_value, get_each_context, get_key);
+    				each_blocks = update_keyed_each(each_blocks, dirty, get_key, 1, ctx, each_value, each_1_lookup, section1, fix_and_outro_and_destroy_block, create_each_block, null, get_each_context);
+    				for (let i = 0; i < each_blocks.length; i += 1) each_blocks[i].a();
     				check_outros();
     			}
     		},
@@ -2413,7 +2742,6 @@ var app = (function () {
     		o: function outro(local) {
     			transition_out(meetupfilter.$$.fragment, local);
     			transition_out(button.$$.fragment, local);
-    			each_blocks = each_blocks.filter(Boolean);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				transition_out(each_blocks[i]);
@@ -2427,7 +2755,10 @@ var app = (function () {
     			destroy_component(button);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(section1);
-    			destroy_each(each_blocks, detaching);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].d();
+    			}
     		}
     	};
 
@@ -2482,6 +2813,8 @@ var app = (function () {
 
     	$$self.$capture_state = () => ({
     		createEventDispatcher,
+    		scale,
+    		flip,
     		MeetupItem,
     		MeetupFilter,
     		Button,
@@ -3297,37 +3630,6 @@ var app = (function () {
     	set validityMessage(value) {
     		throw new Error("<TextInput>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
-    }
-
-    function cubicOut(t) {
-        const f = t - 1.0;
-        return f * f * f + 1.0;
-    }
-
-    function fade(node, { delay = 0, duration = 400, easing = identity } = {}) {
-        const o = +getComputedStyle(node).opacity;
-        return {
-            delay,
-            duration,
-            easing,
-            css: t => `opacity: ${t * o}`
-        };
-    }
-    function fly(node, { delay = 0, duration = 400, easing = cubicOut, x = 0, y = 0, opacity = 0 } = {}) {
-        const style = getComputedStyle(node);
-        const target_opacity = +style.opacity;
-        const transform = style.transform === 'none' ? '' : style.transform;
-        const od = target_opacity * (1 - opacity);
-        const [xValue, xUnit] = split_css_unit(x);
-        const [yValue, yUnit] = split_css_unit(y);
-        return {
-            delay,
-            duration,
-            easing,
-            css: (t, u) => `
-			transform: ${transform} translate(${(1 - t) * xValue}${xUnit}, ${(1 - t) * yValue}${yUnit});
-			opacity: ${target_opacity - (od * u)}`
-        };
     }
 
     /* src/UI/Modal.svelte generated by Svelte v3.59.2 */

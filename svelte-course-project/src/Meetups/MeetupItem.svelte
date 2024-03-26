@@ -10,7 +10,7 @@
     export let imageUrl;
     export let description;
     export let address;
-    // export let email;
+    export let email;
     export let isFav;
 
     const dispatch = createEventDispatcher();
@@ -91,7 +91,7 @@
         <p>{description}</p>
     </div>
     <footer>
-        <!-- <Button href="mailto:{email}">Contact</Button> -->
+        <Button href="mailto:{email}">Contact</Button>
         <Button mode="outline" type="button" on:click={() => dispatch('edit', id)}>Edit Details</Button>
         <Button 
             mode="outline" 
