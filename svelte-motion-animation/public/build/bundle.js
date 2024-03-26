@@ -1525,7 +1525,7 @@ var app = (function () {
     			div = element("div");
     			t = text(t_value);
     			attr_dev(div, "class", "svelte-4i8h4l");
-    			add_location(div, file, 59, 8, 1542);
+    			add_location(div, file, 60, 8, 1615);
     			this.first = div;
     		},
     		m: function mount(target, anchor) {
@@ -1556,17 +1556,22 @@ var app = (function () {
     		i: function intro(local) {
     			if (current) return;
 
-    			add_render_callback(() => {
-    				if (!current) return;
-    				if (!div_transition) div_transition = create_bidirectional_transition(div, fly, { easing: cubicIn, x: 0, y: 300 }, true);
-    				div_transition.run(1);
-    			});
+    			if (local) {
+    				add_render_callback(() => {
+    					if (!current) return;
+    					if (!div_transition) div_transition = create_bidirectional_transition(div, fly, { easing: cubicIn, x: 0, y: 300 }, true);
+    					div_transition.run(1);
+    				});
+    			}
 
     			current = true;
     		},
     		o: function outro(local) {
-    			if (!div_transition) div_transition = create_bidirectional_transition(div, fly, { easing: cubicIn, x: 0, y: 300 }, false);
-    			div_transition.run(0);
+    			if (local) {
+    				if (!div_transition) div_transition = create_bidirectional_transition(div, fly, { easing: cubicIn, x: 0, y: 300 }, false);
+    				div_transition.run(0);
+    			}
+
     			current = false;
     		},
     		d: function destroy(detaching) {

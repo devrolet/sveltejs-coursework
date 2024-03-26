@@ -57,7 +57,8 @@
     <!-- All transitions have delay, duration, and easing -->
     <!-- Scale has easing, start, and opacity -->
     <!-- Fly has x: and y: offset -->
-        <div transition:fly={{ easing: cubicIn, x: 0, y: 300 }} on:click={discard.bind(this, box)} >{box}</div>
+    <!-- local means the one individual entry and not the whole list -->
+        <div transition:fly|local={{ easing: cubicIn, x: 0, y: 300 }} on:click={discard.bind(this, box)} >{box}</div>
     {/each}
 {/if}
 
