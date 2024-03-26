@@ -2,7 +2,8 @@
     import { writable } from 'svelte/store';
     import { tweened } from 'svelte/motion';
     import { cubicIn } from 'svelte/easing';
-    import { fade, fly, slide, scale } from 'svelte/transition'
+    import { fade, fly, slide, scale } from 'svelte/transition';
+    import { flip } from 'svelte/animate';
 
     import Spring from './Spring.svelte';
 
@@ -21,7 +22,7 @@
     let boxes = [];
 
     let addBox = () => {
-        boxes = [...boxes, boxInput.value];
+        boxes = [boxInput.value, ...boxes];
     }
 
     let discard = (value) => {
@@ -44,7 +45,7 @@
 
 <button on:click={() => showParagraph = !showParagraph}>Toggle</button>
 {#if showParagraph}
-<p transition:fly={{x: 300}}>Can you see me?</p>
+<p in:fade out:fly={{x: 300}}>Can you see me?</p>
 {/if}
 
 <hr>
@@ -60,14 +61,13 @@
     <!-- local means the one individual entry and not the whole list -->
     <!-- Having different animations will not allow canceling anim midway -->
         <div 
-            in:fade
-            out:fly|local={{ easing: cubicIn, x: 0, y: 300 }} 
+            transition:fly|local={{ easing: cubicIn, x: 0, y: 300 }} 
             on:click={discard.bind(this, box)}
             on:introstart={() => console.log('Adding the element starts')}
             on:introend={() => console.log('Adding the element ends')}
             on:outrostart={() => console.log('Removing the element starts')}
             on:outroend={() => console.log('Removing the element ends')}
-
+            animate:flip
         >
             {box}
         </div>
