@@ -58,8 +58,10 @@
     <!-- Scale has easing, start, and opacity -->
     <!-- Fly has x: and y: offset -->
     <!-- local means the one individual entry and not the whole list -->
+    <!-- Having different animations will not allow canceling anim midway -->
         <div 
-            transition:fly|local={{ easing: cubicIn, x: 0, y: 300 }} 
+            in:fade
+            out:fly|local={{ easing: cubicIn, x: 0, y: 300 }} 
             on:click={discard.bind(this, box)}
             on:introstart={() => console.log('Adding the element starts')}
             on:introend={() => console.log('Adding the element ends')}
