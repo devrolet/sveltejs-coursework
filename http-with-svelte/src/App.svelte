@@ -1,14 +1,14 @@
 <script>
-
     import { onMount } from 'svelte';
+    import hobbyStore from './hobby-store.js';
 
     let hobbies = [];
     let hobbyInput;
     let isLoading = false;
 
-    // onMount(() => {
+    onMount(() => {
         isLoading = true;
-    let getHobbies = fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json')
+    fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json')
         .then(res => {
             if(!res.ok) {
                 throw new Error("Failed");
@@ -17,8 +17,8 @@
         })
         .then(data => {
             isLoading = false;
-            // Extract OBJ values
-            hobbies = Object.values(data);
+            // Extract OBJ values from cloud db
+            hobbyStore.setHobbies(Object.values(data));
 
             return hobbies;
         })
@@ -26,10 +26,11 @@
             isLoading = false;
             console.log(err);
         });
-    // });
+    });
 
     let addHobby = () => {
-        hobbies = [...hobbies, hobbyInput.value];
+        // hobbies = [...hobbies, hobbyInput.value];
+        hobbyStore.addHobby(hobbyInput.value);
 
         isLoading = true;
         // POST REQUEST
@@ -44,8 +45,8 @@
             if(!res.ok) {
                 throw new Error('Failed');
             }
-            //...
             console.log('Saved Data!');
+            // res.json() => Promise with a object that contains the id
         }).catch(err => {
             isLoading = false;
             console.log(err);
@@ -59,9 +60,9 @@
         color: white;
     }
 
-    ul {
+    /* ul {
         list-style-type: none;
-    }
+    } */
 </style>
 
 <label for="hobby">Hobby</label>
@@ -72,7 +73,7 @@
     <p>Loading...</p>
 {:else}
 <ul>
-    {#each hobbies as hobby}
+    {#each $hobbyStore as hobby}
     <li>{hobby}</li>
     {/each}
 </ul>
