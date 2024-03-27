@@ -85,6 +85,23 @@ var app = (function () {
     function set_current_component(component) {
         current_component = component;
     }
+    function get_current_component() {
+        if (!current_component)
+            throw new Error('Function called outside component initialization');
+        return current_component;
+    }
+    /**
+     * The `onMount` function schedules a callback to run as soon as the component has been mounted to the DOM.
+     * It must be called during the component's initialisation (but doesn't need to live *inside* the component;
+     * it can be called from an external module).
+     *
+     * `onMount` does not run inside a [server-side component](/docs#run-time-server-side-component-api).
+     *
+     * https://svelte.dev/docs#run-time-svelte-onmount
+     */
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
+    }
 
     const dirty_components = [];
     const binding_callbacks = [];
@@ -422,7 +439,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (62:0) {:else}
+    // (74:0) {:else}
     function create_else_block(ctx) {
     	let ul;
     	let each_value = /*hobbies*/ ctx[0];
@@ -441,7 +458,8 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(ul, file, 62, 0, 1558);
+    			attr_dev(ul, "class", "svelte-6ggtu1");
+    			add_location(ul, file, 74, 0, 1772);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, ul, anchor);
@@ -487,14 +505,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(62:0) {:else}",
+    		source: "(74:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (60:0) {#if isLoading}
+    // (72:0) {#if isLoading}
     function create_if_block(ctx) {
     	let p;
 
@@ -502,7 +520,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Loading...";
-    			add_location(p, file, 60, 4, 1532);
+    			add_location(p, file, 72, 4, 1746);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -517,14 +535,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(60:0) {#if isLoading}",
+    		source: "(72:0) {#if isLoading}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (64:4) {#each hobbies as hobby}
+    // (76:4) {#each hobbies as hobby}
     function create_each_block(ctx) {
     	let li;
     	let t_value = /*hobby*/ ctx[5] + "";
@@ -534,7 +552,7 @@ var app = (function () {
     		c: function create() {
     			li = element("li");
     			t = text(t_value);
-    			add_location(li, file, 64, 4, 1596);
+    			add_location(li, file, 76, 4, 1810);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -552,7 +570,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(64:4) {#each hobbies as hobby}",
+    		source: "(76:4) {#each hobbies as hobby}",
     		ctx
     	});
 
@@ -591,12 +609,12 @@ var app = (function () {
     			if_block.c();
     			if_block_anchor = empty();
     			attr_dev(label, "for", "hobby");
-    			add_location(label, file, 55, 0, 1377);
+    			add_location(label, file, 67, 0, 1591);
     			attr_dev(input, "type", "text");
     			attr_dev(input, "id", "hobby");
-    			add_location(input, file, 56, 0, 1410);
-    			attr_dev(button, "class", "svelte-dvxnm6");
-    			add_location(button, file, 57, 0, 1464);
+    			add_location(input, file, 68, 0, 1624);
+    			attr_dev(button, "class", "svelte-6ggtu1");
+    			add_location(button, file, 69, 0, 1678);
     		},
     		l: function claim(nodes) {
     			throw new Error_1("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -665,22 +683,27 @@ var app = (function () {
     	let hobbyInput;
     	let isLoading = false;
 
-    	fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json').then(res => {
-    		if (!res.ok) {
-    			throw new Error("Failed");
-    		}
+    	onMount(() => {
+    		$$invalidate(2, isLoading = true);
 
-    		return res.json();
-    	}).then(data => {
-    		// Extract OBJ values
-    		$$invalidate(0, hobbies = Object.values(data));
+    		fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json').then(res => {
+    			if (!res.ok) {
+    				throw new Error("Failed");
+    			}
 
-    		// Extract OBJ keys
-    		let keys = Object.keys(data);
+    			return res.json();
+    		}).then(data => {
+    			$$invalidate(2, isLoading = false);
 
-    		console.log(keys);
-    	}).catch(err => {
-    		console.log(err);
+    			// Extract OBJ values
+    			$$invalidate(0, hobbies = Object.values(data));
+    		}).catch(err => {
+    			$$invalidate(2, isLoading = false); // Extract OBJ keys
+    			// let keys = Object.keys(data);
+    			// console.log(keys);
+
+    			console.log(err);
+    		});
     	});
 
     	let addHobby = () => {
@@ -720,7 +743,13 @@ var app = (function () {
     		});
     	}
 
-    	$$self.$capture_state = () => ({ hobbies, hobbyInput, isLoading, addHobby });
+    	$$self.$capture_state = () => ({
+    		onMount,
+    		hobbies,
+    		hobbyInput,
+    		isLoading,
+    		addHobby
+    	});
 
     	$$self.$inject_state = $$props => {
     		if ('hobbies' in $$props) $$invalidate(0, hobbies = $$props.hobbies);
