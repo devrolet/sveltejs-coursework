@@ -3,6 +3,24 @@
     let hobbyInput;
     let isLoading = false;
 
+    fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json')
+        .then(res => {
+            if(!res.ok) {
+                throw new Error("Failed");
+            }
+            return res.json();
+        })
+        .then(data => {
+            // Extract OBJ values
+            hobbies = Object.values(data);
+            // Extract OBJ keys
+            let keys = Object.keys(data);
+            console.log(keys);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+
     let addHobby = () => {
         hobbies = [...hobbies, hobbyInput.value];
 
@@ -27,6 +45,13 @@
         });
     }
 </script>
+
+<style>
+    button {
+        background-color: green;
+        color: white;
+    }
+</style>
 
 <label for="hobby">Hobby</label>
 <input type="text" id="hobby" bind:this={hobbyInput}>
