@@ -1,18 +1,21 @@
 <script>
     import Product from './Product.svelte';
-    import CartItem from './CartItems.svelte';
-  import CartItems from './CartItems.svelte';
+    import CartItems from './CartItems.svelte';
 
-    let showProduct = true;
+    let renderedComponent = {cmp: Product, title: "Test Product", id: "p1"}
 
     let toggle = () => {
-        showProduct = !showProduct;
+        if(renderedComponent.cmp === Product) {
+            renderedComponent = {cmp: CartItems, title: "Cart Test Product", id: "p2"}
+        } else {
+            renderedComponent = {cmp: Product, title: "Test Product", id: "p1"}
+        }
     }
 </script>
 
 <button on:click={toggle}>Toggle Display</button>
-{#if showProduct}
-    <Product  title="Test Product" id="p1" />
-{:else}
-    <CartItems title="Another Product" id="p2" />
-{/if}
+<svelte:component 
+    this={renderedComponent.cmp}  
+    title={renderedComponent.title} 
+    id={renderedComponent.id} 
+/>
