@@ -6,9 +6,9 @@
     let hobbyInput;
     let isLoading = false;
 
-    onMount(() => {
+    // onMount(() => {
         isLoading = true;
-        fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json')
+    let getHobbies = fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json')
         .then(res => {
             if(!res.ok) {
                 throw new Error("Failed");
@@ -19,15 +19,14 @@
             isLoading = false;
             // Extract OBJ values
             hobbies = Object.values(data);
-            // Extract OBJ keys
-            // let keys = Object.keys(data);
-            // console.log(keys);
+
+            return hobbies;
         })
         .catch(err => {
             isLoading = false;
             console.log(err);
         });
-    });
+    // });
 
     let addHobby = () => {
         hobbies = [...hobbies, hobbyInput.value];
@@ -78,3 +77,16 @@
     {/each}
 </ul>
 {/if}
+
+<!-- Await block good for data that will not change directly -->
+<!-- {#await getHobbies}
+    <p>Loading...</p>
+{:then hobbyData}
+<ul>
+    {#each hobbyData as hobby}
+        <li>{hobby}</li>
+    {/each}
+</ul>
+{:catch error}
+    <p>{error.message}</p>
+{/await} -->

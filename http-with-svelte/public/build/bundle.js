@@ -435,11 +435,11 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[5] = list[i];
+    	child_ctx[6] = list[i];
     	return child_ctx;
     }
 
-    // (74:0) {:else}
+    // (73:0) {:else}
     function create_else_block(ctx) {
     	let ul;
     	let each_value = /*hobbies*/ ctx[0];
@@ -459,7 +459,7 @@ var app = (function () {
     			}
 
     			attr_dev(ul, "class", "svelte-6ggtu1");
-    			add_location(ul, file, 74, 0, 1772);
+    			add_location(ul, file, 73, 0, 1709);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, ul, anchor);
@@ -505,14 +505,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(74:0) {:else}",
+    		source: "(73:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (72:0) {#if isLoading}
+    // (71:0) {#if isLoading}
     function create_if_block(ctx) {
     	let p;
 
@@ -520,7 +520,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Loading...";
-    			add_location(p, file, 72, 4, 1746);
+    			add_location(p, file, 71, 4, 1683);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -535,31 +535,31 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(72:0) {#if isLoading}",
+    		source: "(71:0) {#if isLoading}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (76:4) {#each hobbies as hobby}
+    // (75:4) {#each hobbies as hobby}
     function create_each_block(ctx) {
     	let li;
-    	let t_value = /*hobby*/ ctx[5] + "";
+    	let t_value = /*hobby*/ ctx[6] + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			li = element("li");
     			t = text(t_value);
-    			add_location(li, file, 76, 4, 1810);
+    			add_location(li, file, 75, 4, 1747);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
     			append_dev(li, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*hobbies*/ 1 && t_value !== (t_value = /*hobby*/ ctx[5] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*hobbies*/ 1 && t_value !== (t_value = /*hobby*/ ctx[6] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(li);
@@ -570,7 +570,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(76:4) {#each hobbies as hobby}",
+    		source: "(75:4) {#each hobbies as hobby}",
     		ctx
     	});
 
@@ -609,12 +609,12 @@ var app = (function () {
     			if_block.c();
     			if_block_anchor = empty();
     			attr_dev(label, "for", "hobby");
-    			add_location(label, file, 67, 0, 1591);
+    			add_location(label, file, 66, 0, 1528);
     			attr_dev(input, "type", "text");
     			attr_dev(input, "id", "hobby");
-    			add_location(input, file, 68, 0, 1624);
+    			add_location(input, file, 67, 0, 1561);
     			attr_dev(button, "class", "svelte-6ggtu1");
-    			add_location(button, file, 69, 0, 1678);
+    			add_location(button, file, 68, 0, 1615);
     		},
     		l: function claim(nodes) {
     			throw new Error_1("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -683,29 +683,28 @@ var app = (function () {
     	let hobbyInput;
     	let isLoading = false;
 
-    	onMount(() => {
-    		$$invalidate(2, isLoading = true);
+    	// onMount(() => {
+    	isLoading = true;
 
-    		fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json').then(res => {
-    			if (!res.ok) {
-    				throw new Error("Failed");
-    			}
+    	let getHobbies = fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json').then(res => {
+    		if (!res.ok) {
+    			throw new Error("Failed");
+    		}
 
-    			return res.json();
-    		}).then(data => {
-    			$$invalidate(2, isLoading = false);
+    		return res.json();
+    	}).then(data => {
+    		$$invalidate(2, isLoading = false);
 
-    			// Extract OBJ values
-    			$$invalidate(0, hobbies = Object.values(data));
-    		}).catch(err => {
-    			$$invalidate(2, isLoading = false); // Extract OBJ keys
-    			// let keys = Object.keys(data);
-    			// console.log(keys);
+    		// Extract OBJ values
+    		$$invalidate(0, hobbies = Object.values(data));
 
-    			console.log(err);
-    		});
+    		return hobbies;
+    	}).catch(err => {
+    		$$invalidate(2, isLoading = false);
+    		console.log(err);
     	});
 
+    	// });
     	let addHobby = () => {
     		$$invalidate(0, hobbies = [...hobbies, hobbyInput.value]);
     		$$invalidate(2, isLoading = true);
@@ -748,6 +747,7 @@ var app = (function () {
     		hobbies,
     		hobbyInput,
     		isLoading,
+    		getHobbies,
     		addHobby
     	});
 
@@ -755,6 +755,7 @@ var app = (function () {
     		if ('hobbies' in $$props) $$invalidate(0, hobbies = $$props.hobbies);
     		if ('hobbyInput' in $$props) $$invalidate(1, hobbyInput = $$props.hobbyInput);
     		if ('isLoading' in $$props) $$invalidate(2, isLoading = $$props.isLoading);
+    		if ('getHobbies' in $$props) getHobbies = $$props.getHobbies;
     		if ('addHobby' in $$props) $$invalidate(3, addHobby = $$props.addHobby);
     	};
 
