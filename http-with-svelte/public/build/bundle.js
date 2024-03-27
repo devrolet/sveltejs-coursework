@@ -59,6 +59,9 @@ var app = (function () {
     function space() {
         return text(' ');
     }
+    function empty() {
+        return text('');
+    }
     function listen(node, event, handler, options) {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
@@ -415,55 +418,13 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[4] = list[i];
+    	child_ctx[5] = list[i];
     	return child_ctx;
     }
 
-    // (31:4) {#each hobbies as hobby}
-    function create_each_block(ctx) {
-    	let li;
-    	let t_value = /*hobby*/ ctx[4] + "";
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			li = element("li");
-    			t = text(t_value);
-    			add_location(li, file, 31, 4, 783);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, li, anchor);
-    			append_dev(li, t);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*hobbies*/ 1 && t_value !== (t_value = /*hobby*/ ctx[4] + "")) set_data_dev(t, t_value);
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(li);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block.name,
-    		type: "each",
-    		source: "(31:4) {#each hobbies as hobby}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function create_fragment(ctx) {
-    	let label;
-    	let t1;
-    	let input;
-    	let t2;
-    	let button;
-    	let t4;
+    // (37:0) {:else}
+    function create_else_block(ctx) {
     	let ul;
-    	let mounted;
-    	let dispose;
     	let each_value = /*hobbies*/ ctx[0];
     	validate_each_argument(each_value);
     	let each_blocks = [];
@@ -474,39 +435,15 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			label = element("label");
-    			label.textContent = "Hobby";
-    			t1 = space();
-    			input = element("input");
-    			t2 = space();
-    			button = element("button");
-    			button.textContent = "Add Hobby";
-    			t4 = space();
     			ul = element("ul");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(label, "for", "hobby");
-    			add_location(label, file, 25, 0, 610);
-    			attr_dev(input, "type", "text");
-    			attr_dev(input, "id", "hobby");
-    			add_location(input, file, 26, 0, 643);
-    			add_location(button, file, 27, 0, 697);
-    			add_location(ul, file, 29, 0, 745);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error_1("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    			add_location(ul, file, 37, 0, 955);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, label, anchor);
-    			insert_dev(target, t1, anchor);
-    			insert_dev(target, input, anchor);
-    			/*input_binding*/ ctx[3](input);
-    			insert_dev(target, t2, anchor);
-    			insert_dev(target, button, anchor);
-    			insert_dev(target, t4, anchor);
     			insert_dev(target, ul, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -514,13 +451,8 @@ var app = (function () {
     					each_blocks[i].m(ul, null);
     				}
     			}
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*addHobby*/ ctx[2], false, false, false, false);
-    				mounted = true;
-    			}
     		},
-    		p: function update(ctx, [dirty]) {
+    		p: function update(ctx, dirty) {
     			if (dirty & /*hobbies*/ 1) {
     				each_value = /*hobbies*/ ctx[0];
     				validate_each_argument(each_value);
@@ -545,18 +477,170 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
     		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(ul);
+    			destroy_each(each_blocks, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(37:0) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (35:0) {#if isLoading}
+    function create_if_block(ctx) {
+    	let p;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			p.textContent = "Loading...";
+    			add_location(p, file, 35, 4, 929);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(35:0) {#if isLoading}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (39:4) {#each hobbies as hobby}
+    function create_each_block(ctx) {
+    	let li;
+    	let t_value = /*hobby*/ ctx[5] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			li = element("li");
+    			t = text(t_value);
+    			add_location(li, file, 39, 4, 993);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, li, anchor);
+    			append_dev(li, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*hobbies*/ 1 && t_value !== (t_value = /*hobby*/ ctx[5] + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(li);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block.name,
+    		type: "each",
+    		source: "(39:4) {#each hobbies as hobby}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment(ctx) {
+    	let label;
+    	let t1;
+    	let input;
+    	let t2;
+    	let button;
+    	let t4;
+    	let if_block_anchor;
+    	let mounted;
+    	let dispose;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*isLoading*/ ctx[2]) return create_if_block;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			label = element("label");
+    			label.textContent = "Hobby";
+    			t1 = space();
+    			input = element("input");
+    			t2 = space();
+    			button = element("button");
+    			button.textContent = "Add Hobby";
+    			t4 = space();
+    			if_block.c();
+    			if_block_anchor = empty();
+    			attr_dev(label, "for", "hobby");
+    			add_location(label, file, 30, 0, 774);
+    			attr_dev(input, "type", "text");
+    			attr_dev(input, "id", "hobby");
+    			add_location(input, file, 31, 0, 807);
+    			add_location(button, file, 32, 0, 861);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error_1("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, label, anchor);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, input, anchor);
+    			/*input_binding*/ ctx[4](input);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, button, anchor);
+    			insert_dev(target, t4, anchor);
+    			if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*addHobby*/ ctx[3], false, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(label);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(input);
-    			/*input_binding*/ ctx[3](null);
+    			/*input_binding*/ ctx[4](null);
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(button);
     			if (detaching) detach_dev(t4);
-    			if (detaching) detach_dev(ul);
-    			destroy_each(each_blocks, detaching);
+    			if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     			mounted = false;
     			dispose();
     		}
@@ -578,21 +662,29 @@ var app = (function () {
     	validate_slots('App', slots, []);
     	let hobbies = [];
     	let hobbyInput;
+    	let isLoading = false;
 
     	let addHobby = () => {
     		$$invalidate(0, hobbies = [...hobbies, hobbyInput.value]);
+    		$$invalidate(2, isLoading = true);
 
     		// POST REQUEST
     		fetch('https://meetup-svelte-app-default-rtdb.firebaseio.com/hobbies.json', {
     			method: 'POST',
-    			body: JSON.stringify(hobbies),
+    			body: JSON.stringify(hobbyInput.value),
     			headers: { 'Content-Type': 'application/json' }
     		}).then(res => {
+    			$$invalidate(2, isLoading = false);
+
     			if (!res.ok) {
     				throw new Error('Failed');
     			}
+
+    			//...
+    			console.log('Saved Data!');
     		}).catch(err => {
-    			console.log(err); //...
+    			$$invalidate(2, isLoading = false);
+    			console.log(err);
     		});
     	};
 
@@ -609,19 +701,20 @@ var app = (function () {
     		});
     	}
 
-    	$$self.$capture_state = () => ({ hobbies, hobbyInput, addHobby });
+    	$$self.$capture_state = () => ({ hobbies, hobbyInput, isLoading, addHobby });
 
     	$$self.$inject_state = $$props => {
     		if ('hobbies' in $$props) $$invalidate(0, hobbies = $$props.hobbies);
     		if ('hobbyInput' in $$props) $$invalidate(1, hobbyInput = $$props.hobbyInput);
-    		if ('addHobby' in $$props) $$invalidate(2, addHobby = $$props.addHobby);
+    		if ('isLoading' in $$props) $$invalidate(2, isLoading = $$props.isLoading);
+    		if ('addHobby' in $$props) $$invalidate(3, addHobby = $$props.addHobby);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [hobbies, hobbyInput, addHobby, input_binding];
+    	return [hobbies, hobbyInput, isLoading, addHobby, input_binding];
     }
 
     class App extends SvelteComponentDev {
