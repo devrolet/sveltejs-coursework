@@ -94,7 +94,16 @@
     }
 
     let deleteMeetup = () => {
-        meetups.removeMeetup(id);
+        fetch(`https://meetup-svelte-app-default-rtdb.firebaseio.com/meetups/${id}.json`, {
+            method: 'DELETE'
+        }).then(res => {
+            if(!res.ok) {
+                throw new Error('Deleting the meetup was unsuccessful')
+            }
+            meetups.removeMeetup(id);
+        }).catch(err => {
+            console.log(err);
+        });
         dispatch('save');
     }
     
