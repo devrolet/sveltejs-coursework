@@ -3,6 +3,12 @@
     import CartItems from './CartItems.svelte';
     import FamilyNode from './FamilyNode.svelte';
 
+    let y;
+
+    $: console.log(y)
+
+    let currentTitle = 'This app';
+
     // SVELTE unable to go further than one level in a nested array, must use self
     let familyStructure = [
         {
@@ -33,15 +39,37 @@
             renderedComponent = {cmp: Product, title: "Test Product", id: "p1"}
         }
     }
+
+    let switchTitle = () => {
+        currentTitle = "That app over there"
+    }
 </script>
 
-<button on:click={toggle}>Toggle Display</button>
-<svelte:component 
-    this={renderedComponent.cmp}  
-    title={renderedComponent.title} 
-    id={renderedComponent.id} 
-/>
+<style>
+    div {
+        height: 3000px;
+    }
+</style>
 
-{#each familyStructure as familyMember}
-    <FamilyNode member={familyMember} />
-{/each}
+<!-- Dynamic access to the window object -->
+<svelte:window bind:scrollY={y} />
+<!-- Dynamic access to the body tag -->
+<svelte:body on:mouseenter />
+<!-- Dynamic access to the head tag -->
+<svelte:head>
+    <title>{currentTitle}</title>
+</svelte:head>
+
+<button on:click={switchTitle}>Switch Title</button>
+<div>
+    <button on:click={toggle}>Toggle Display</button>
+    <svelte:component 
+        this={renderedComponent.cmp}  
+        title={renderedComponent.title} 
+        id={renderedComponent.id} 
+    />
+
+    {#each familyStructure as familyMember}
+        <FamilyNode member={familyMember} />
+    {/each}
+</div>
