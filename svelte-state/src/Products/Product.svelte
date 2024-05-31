@@ -1,7 +1,6 @@
 <script>
   import cartItems from '../Cart/cart-store.js';
   import Button from "../UI/Button.svelte";
-
   export let id;
   export let title;
   export let price;
