@@ -14,6 +14,11 @@
 			title: 'A Book About Nothing',
 			price: 19.99,
 			bestseller: true
+		},
+		{
+			id: 'p3',
+			title: 'Another Book About Nothing',
+			price: 19.99
 		}
 	];
 
