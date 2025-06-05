@@ -153,7 +153,7 @@
             type="email"
             value={email} 
             valid={emailValid}
-            validityMessage="Please enter a valid email"
+            validityMessage="Please enter a valid email address"
             on:input={event => (email = event.target.value)} />
         <TextInput 
             id="description" 
